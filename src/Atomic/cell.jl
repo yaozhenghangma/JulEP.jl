@@ -107,7 +107,8 @@ mutable struct Cell
         Array{Atom{Float64}, 1}([]),
         Array{Int32, 1}([]),
         Array{String, 1}([]))
-    Cell(n, l, a, u, s) = new(n, l, a, u, s)
+    Cell(name, lattice, atoms, numbers, symbols) =
+        new(name, lattice, atoms, numbers, symbols)
 end
 
 function (cell::Cell)()
@@ -116,7 +117,7 @@ end
 
 function Base.:(==)(cell1::Cell, cell2::Cell)
     cell1.lattice == cell2.lattice || return false
-    cell1.atoms == cell1.atoms || return false
+    cell1.atoms == cell2.atoms || return false
     return true
 end
 

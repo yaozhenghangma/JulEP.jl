@@ -13,9 +13,11 @@
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-module JulEP
+module MatterEnv
 
 include("Atomic/cell.jl")
+
+include("VASP/VASP.jl")
 
 export Atom, Cell, Lattice
 

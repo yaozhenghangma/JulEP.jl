@@ -1,14 +1,14 @@
 ```@meta
-CurrentModule = JulEP
+CurrentModule = MatterEnv
 ```
 
-# JulEP
+# MatterEnv
 
-Documentation for [JulEP](https://github.com/YaozhenghangMa/JulEP.jl).
+Documentation for [MatterEnv](https://github.com/YaozhenghangMa/MatterEnv.jl).
 
 ```@index
 ```
 
 ```@autodocs
-Modules = [JulEP]
+Modules = [MatterEnv]
 ```

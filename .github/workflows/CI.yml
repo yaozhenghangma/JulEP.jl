@@ -52,6 +52,6 @@ jobs:
       - run: |
           julia --project=docs -e '
             using Documenter: DocMeta, doctest
-            using JulEP
-            DocMeta.setdocmeta!(JulEP, :DocTestSetup, :(using JulEP); recursive=true)
-            doctest(JulEP)'
+            using MatterEnv
+            DocMeta.setdocmeta!(MatterEnv, :DocTestSetup, :(using MatterEnv); recursive=true)
+            doctest(MatterEnv)'

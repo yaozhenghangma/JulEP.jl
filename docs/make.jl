@@ -1,16 +1,16 @@
-using JulEP
+using MatterEnv
 using Documenter
 
-DocMeta.setdocmeta!(JulEP, :DocTestSetup, :(using JulEP); recursive=true)
+DocMeta.setdocmeta!(MatterEnv, :DocTestSetup, :(using MatterEnv); recursive=true)
 
 makedocs(;
-    modules=[JulEP],
+    modules=[MatterEnv],
     authors="Yaozhenghang Ma <yaozhenghang.ma@gmail.com> and contributors",
-    repo="https://github.com/YaozhenghangMa/JulEP.jl/blob/{commit}{path}#{line}",
-    sitename="JulEP.jl",
+    repo="https://github.com/YaozhenghangMa/MatterEnv.jl/blob/{commit}{path}#{line}",
+    sitename="MatterEnv.jl",
     format=Documenter.HTML(;
         prettyurls=get(ENV, "CI", "false") == "true",
-        canonical="https://YaozhenghangMa.github.io/JulEP.jl",
+        canonical="https://YaozhenghangMa.github.io/MatterEnv.jl",
         assets=String[],
     ),
     pages=[
@@ -19,5 +19,5 @@ makedocs(;
 )
 
 deploydocs(;
-    repo="github.com/YaozhenghangMa/JulEP.jl",
+    repo="github.com/YaozhenghangMa/MatterEnv.jl",
 )
