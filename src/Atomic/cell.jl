@@ -14,7 +14,7 @@
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 """
-    Atom
+    Atom{T <: Real}
 
 Data type for single atom.
 
@@ -43,7 +43,7 @@ end
 
 
 """
-    Lattice
+    Lattice{T <: Real}
 
 Data type of lattice.
 
@@ -53,7 +53,7 @@ Data type of lattice.
 - `b:Array{T, 1}`: stores basis of axis b
 - `c:Array{T, 1}`: stores basis of axis c
 """
-struct Lattice{T}
+struct Lattice{T <: Real}
     lattice::Array{T, 2}
     a::Array{T, 1}
     b::Array{T, 1}
@@ -77,7 +77,9 @@ function Base.:(==)(lattice1::Lattice, lattice2::Lattice)
 end
 
 function Base.show(io::IO, lattice::Lattice)
-    print(io, lattice())
+    println(io, lattice.a)
+    println(io, lattice.b)
+    print(io, lattice.c)
 end
 
 
@@ -88,17 +90,24 @@ Data type for cell.
 
 # Fields
 - `name::String`: stores the name of the cell.
-- `lattice::Lattice{T}`: stores metadata about the lattice
-- `atoms::Array{Atom{T}, 1}`: stroes metadata of all atoms in the cell
-- `numbers::Array{W, 1} where W <: Integer`: stroes the numbers of atoms of elements
+- `lattice::Lattice{<:Real}`: stores metadata about the lattice
+- `atoms::Array{Atom{<:Real}, 1}`: stroes metadata of all atoms in the cell
+- `numbers::Array{<:Integer, 1}`: stroes the numbers of atoms of elements
 - `symbols::Array{String, 1}`: stores the chemical symbols of atoms of elements
 """
-mutable struct Cell{T <: Real}
+mutable struct Cell
     name::String
-    lattice::Lattice{T}
-    atoms::Array{Atom{T}, 1}
-    numbers::Array{W, 1} where W <: Integer
+    lattice::Lattice{<:Real}
+    atoms::Array{Atom{<:Real}, 1}
+    numbers::Array{<:Integer, 1}
     symbols::Array{String, 1}
+
+    Cell() = Cell(" ",
+        Lattice(Array{Float64, 2}(zeros(3, 3))),
+        Array{Atom{Float64}, 1}([]),
+        Array{Int32, 1}([]),
+        Array{String, 1}([]))
+    Cell(n, l, a, u, s) = new(n, l, a, u, s)
 end
 
 function (cell::Cell)()
@@ -112,9 +121,11 @@ function Base.:(==)(cell1::Cell, cell2::Cell)
 end
 
 function Base.show(io::IO, cell::Cell)
-    print(io, cell.name, "\n",
-        cell.lattice(), "\n",
+    println(io, cell.name, "\n",
+        cell.lattice, "\n",
         cell.symbols, "\n",
-        cell.numbers, "\n",
-        cell.atoms)
+        cell.numbers)
+    for atom in cell.atoms
+        println(atom)
+    end
 end
