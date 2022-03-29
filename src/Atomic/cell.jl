@@ -129,3 +129,7 @@ function Base.show(io::IO, cell::Cell)
         println(atom)
     end
 end
+
+function inv(lattice::Lattice{<:Real})
+    return Base.inv(lattice())
+end
