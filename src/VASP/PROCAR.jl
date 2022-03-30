@@ -16,6 +16,7 @@
 using Printf
 
 include("../Atomic/kpoint.jl")
+include("../Atomic/band.jl")
 include("../Atomic/projection.jl")
 
 """
@@ -33,6 +34,7 @@ function load_procar(filename::String="PROCAR")
     input = open(filename, "r");
     pro = Projection(0, 0, 0,
         Array{KPoint, 1}([]),
+        Array{Band, 1}([]),
         Array{ComplexF64, 4}(complex.(zeros(1, 1, 1, 1), zeros(1, 1, 1, 1))),
         Array{Float64, 4}(zeros(1, 1, 1, 1)))
 
@@ -59,6 +61,9 @@ function load_procar(filename::String="PROCAR")
         pro.projection_square = Array{Float64, 4}(
             zeros(pro.number_kpoints, pro.number_bands, pro.number_ions, 9))
     end
+    for j in 1:pro.number_bands
+        push!(pro.bands, Band(0.0, Array{Float64, 1}(zeros(pro.number_kpoints))))
+    end
     for i in 1:pro.number_kpoints
         readline(input)     #blank line
         split_line = split(strip(readline(input)))      #kpoint: coordinate and weight
@@ -69,7 +74,9 @@ function load_procar(filename::String="PROCAR")
         pro.kpoints[i].weight = parse(Float64, split_line[9])
         readline(input)     #blank line
         for j in 1:pro.number_bands
-            readline(input)     #band
+            split_line = split(strip(readline(input)))     #band
+            pro.bands[j].energy[i] = parse(Float64, split_line[5])
+            pro.bands[j].occupancy = parse(Float64, split_line[8])
             readline(input)     #blank line
             readline(input)     #orbit
             for k in 1:pro.number_ions
@@ -91,5 +98,8 @@ function load_procar(filename::String="PROCAR")
             readline(input)     #blank line
         end
     end
+
+    close(input)
     return pro
 end
+

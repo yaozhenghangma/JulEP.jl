@@ -52,13 +52,13 @@ function load_poscar(filename::String="POSCAR")
     if direct_coordinate
         for i in 1:length(cell.numbers), j in 1:cell.numbers[i]
             push!(cell.atoms, Atom(cell.symbols[i],
-                                transpose(transpose(parse.(Float64,
-                                split(strip(readline(input))))) * cell.lattice())))
+                transpose(transpose(parse.(Float64,
+                split(strip(readline(input))))) * cell.lattice())))
         end
     else
         for i in 1:length(cell.numbers), j in 1:cell.numbers[i]
             push!(cell.atoms, Atom(cell.symbols[i],
-                                parse.(Float64, split(strip(readline(input))))))
+                parse.(Float64, split(strip(readline(input))))))
         end
     end
     close(input)
@@ -83,9 +83,9 @@ function save_poscar(cell::Cell, filename::String="POSCAR", direct::Bool=true)
     write(output, "1.0\n")
     for i in 1:3
         write(output, "$(@sprintf(" %.7f\t %.7f\t %.7f\n",
-                                    cell.lattice()[i, 1],
-                                    cell.lattice()[i, 2],
-                                    cell.lattice()[i, 3]))")
+            cell.lattice()[i, 1],
+            cell.lattice()[i, 2],
+            cell.lattice()[i, 3]))")
     end
     for symbol in cell.symbols
         write(output, symbol, " ")
@@ -100,17 +100,17 @@ function save_poscar(cell::Cell, filename::String="POSCAR", direct::Bool=true)
         for atom in cell.atoms
             direct_position = transpose(transpose(atom.position) * inverse_lattice)
             write(output, "$(@sprintf(" %.7f\t %.7f\t %.7f\n",
-                                        direct_position[1],
-                                        direct_position[2],
-                                        direct_position[3]))")
+                direct_position[1],
+                direct_position[2],
+                direct_position[3]))")
         end
     else
         write(output, "\nCertesian\n")
         for atom in cell.atoms
             write(output, "$(@sprintf(" %.7f\t %.7f\t %.7f\n",
-                                        atom.position[1],
-                                        atom.position[2],
-                                        atom.position[3]))")
+                atom.position[1],
+                atom.position[2],
+                atom.position[3]))")
         end
     end
     close(output)
