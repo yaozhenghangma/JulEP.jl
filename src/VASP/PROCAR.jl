@@ -103,3 +103,64 @@ function load_procar(filename::String="PROCAR")
     return pro
 end
 
+
+"""
+    save_procar(projection::Projection,
+        filename::String="PROCAR",
+        squared_only::Bool=true)
+        output = open(filename, "w")
+
+Save projection of wave function ⟨Yₗₘ|ϕₙₖ⟩ into PROCAR file.
+
+# Arguments
+- `projection::Projection`: projection of wave function
+- `filename::String="PROCAR"`: name of output file
+- `squared_only::Bool=true`: only output squared projection |⟨Yₗₘ|ϕₙₖ⟩|²
+"""
+function save_procar(projection::Projection,
+    filename::String="PROCAR",
+    squared_only::Bool=true)
+    output = open(filename, "w")
+
+    write(output, "PROCAR ", squared_only ? "lm decomposed\n" : "lm decomposed + phse\n")
+    write(output, "$(@sprintf("# of k-points:\t%d\t# of bands:\t%d\t# of ions:\t%d\n",
+        projection.number_kpoints,
+        projection.number_bands,
+        projection.number_ions))")
+
+    for i in 1:projection.number_kpoints
+        write(output, "$(@sprintf("\n k-point\t%d :\t%.7f %.7f %.7f\tweight = %.7f\n",
+            i,
+            projection.kpoints[i].coordinate[1],
+            projection.kpoints[i].coordinate[2],
+            projection.kpoints[i].coordinate[3],
+            projection.kpoints[i].weight))")
+        for j in 1:projection.number_bands
+            write(output, "$(@sprintf("\nband\t%d # energy\t%.7f # occ.\t%.7f\n",
+                j,
+                projection.bands[j].energy[i],
+                projection.bands[j].occupancy))")
+            write(output, "\nion\t\ts\tpy\tpz\tpx\tdxy\tdyz\tdz2\tdxz\tx2-y2\ttot\n")
+            for k in 1:projection.number_ions
+                write(output, "$(@sprintf("\t%d\t", k))")
+                for l in 1:9
+                    write(output, "$(@sprintf("%.3f\t",
+                        projection.projection_square[i, j, k, l]))")
+                end
+                write(output, "$(@sprintf("%.3f\n",
+                    sum(projection.projection_square[i, j, k, :])))")
+            end
+            write(output, "tot\t\t")
+            for l in 1:9
+                write(output,"$(@sprintf("%.3f\t",
+                    sum(projection.projection_square[i, j, :, l])))")
+            end
+            write(output, "$(@sprintf("%.3f\n",
+                sum(projection.projection_square[i, j, :, :])))")
+            #todo: write projection
+        end
+    end
+
+    close(output)
+    return nothing
+end
