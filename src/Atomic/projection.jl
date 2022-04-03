@@ -16,6 +16,8 @@
 include("kpoint.jl")
 include("band.jl")
 
+abstract type AbstractProjection end
+
 """
     Projection
 
@@ -32,7 +34,7 @@ Data type for projection of wave function.
 - `projection_square::Array{<:Real, 4}`: stores the squared projection |⟨Yₗₘ|ϕₙₖ⟩|². The
     index order is same as `projection`.
 """
-mutable struct Projection
+mutable struct Projection <: AbstractProjection
     number_kpoints::Integer
     number_bands::Integer
     number_ions::Integer
@@ -41,3 +43,26 @@ mutable struct Projection
     projection::Array{<:Complex, 4}
     projection_square::Array{<:Real, 4}
 end
+
+Projection() = Projection(0, 0, 0,
+    Array{KPoint, 1}([]),
+    Array{Band, 1}([]),
+    Array{ComplexF64, 4}(complex.(zeros(1, 1, 1, 1), zeros(1, 1, 1, 1))),
+    Array{Float64, 4}(zeros(1, 1, 1, 1)))
+
+
+"""
+    Projection
+
+Data type for projection of wave function.
+
+# Fields
+- `projection_up::Projection`: stores the projection of spin up electrons
+- `projection_down::Projection`: stores the projection of spin down electrons
+"""
+mutable struct ProjectionWithSpin <: AbstractProjection
+    projection_up::Projection
+    projection_down::Projection
+end
+
+ProjectionWithSpin() = ProjectionWithSpin(Projection(), Projection())

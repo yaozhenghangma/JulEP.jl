@@ -19,51 +19,7 @@ include("../Atomic/kpoint.jl")
 include("../Atomic/band.jl")
 include("../Atomic/projection.jl")
 
-"""
-    load_procar(filename::String="PROCAR") -> Projection
-
-Load projection of wave function ⟨Yₗₘ|ϕₙₖ⟩ from PROCAR file.
-
-# Arguments
-- `filename::String="PROCAR"`: name of input file
-
-# Returns
-- `Projection`: Projection of wave function ⟨Yₗₘ|ϕₙₖ⟩
-"""
-function load_procar(filename::String="PROCAR")
-    input = open(filename, "r");
-    pro = Projection(0, 0, 0,
-        Array{KPoint, 1}([]),
-        Array{Band, 1}([]),
-        Array{ComplexF64, 4}(complex.(zeros(1, 1, 1, 1), zeros(1, 1, 1, 1))),
-        Array{Float64, 4}(zeros(1, 1, 1, 1)))
-
-    phase = false
-    split_line = split(strip(readline(input)))      #comment line
-    for word in split_line
-        if word == "phase"
-            phase = true
-            break
-        end
-    end
-
-    split_line = split(strip(readline(input)))      #k-points, bands and ions
-    pro.number_kpoints = parse(Int32, split_line[4])
-    pro.number_bands = parse(Int32, split_line[8])
-    pro.number_ions = parse(Int32, split_line[12])
-    if phase
-        pro.projection = Array{ComplexF64, 4}(
-            complex.(zeros(pro.number_kpoints, pro.number_bands, pro.number_ions, 9),
-            zeros(pro.number_kpoints, pro.number_bands, pro.number_ions, 9)))
-        pro.projection_square = Array{Float64, 4}(
-            zeros(pro.number_kpoints, pro.number_bands, pro.number_ions, 9))
-    else
-        pro.projection_square = Array{Float64, 4}(
-            zeros(pro.number_kpoints, pro.number_bands, pro.number_ions, 9))
-    end
-    for j in 1:pro.number_bands
-        push!(pro.bands, Band(0.0, Array{Float64, 1}(zeros(pro.number_kpoints))))
-    end
+function read_weight!(input, pro, phase)
     for i in 1:pro.number_kpoints
         readline(input)     #blank line
         split_line = split(strip(readline(input)))      #kpoint: coordinate and weight
@@ -98,31 +54,75 @@ function load_procar(filename::String="PROCAR")
             readline(input)     #blank line
         end
     end
+    return nothing
+end
+
+
+function allocate_space!(input, pro, phase)
+    split_line = split(strip(readline(input)))      #k-points, bands and ions
+    pro.number_kpoints = parse(Int32, split_line[4])
+    pro.number_bands = parse(Int32, split_line[8])
+    pro.number_ions = parse(Int32, split_line[12])
+    if phase
+        pro.projection = Array{ComplexF64, 4}(
+            complex.(zeros(pro.number_kpoints, pro.number_bands, pro.number_ions, 9),
+            zeros(pro.number_kpoints, pro.number_bands, pro.number_ions, 9)))
+        pro.projection_square = Array{Float64, 4}(
+            zeros(pro.number_kpoints, pro.number_bands, pro.number_ions, 9))
+    else
+        pro.projection_square = Array{Float64, 4}(
+            zeros(pro.number_kpoints, pro.number_bands, pro.number_ions, 9))
+    end
+    for j in 1:pro.number_bands
+        push!(pro.bands, Band(0.0, Array{Float64, 1}(zeros(pro.number_kpoints))))
+    end
+    return nothing
+end
+
+
+"""
+    load_procar(filename::String="PROCAR") -> Projection
+
+Load projection of wave function ⟨Yₗₘ|ϕₙₖ⟩ from PROCAR file.
+
+# Arguments
+- `filename::String="PROCAR"`: name of input file
+- `spin::Bool=false`: distingush spin up and spin down or not
+
+# Returns
+- `Projection`: Projection of wave function ⟨Yₗₘ|ϕₙₖ⟩
+"""
+function load_procar(filename::String="PROCAR", spin::Bool=false)
+    input = open(filename, "r");
+
+    phase = false
+    split_line = split(strip(readline(input)))      #comment line
+    for word in split_line
+        if word == "phase"
+            phase = true
+            break
+        end
+    end
+
+    if spin
+        pro = ProjectionWithSpin()
+        allocate_space!(input, pro.projection_up, phase)
+        read_weight!(input, pro.projection_up, phase)
+        readline(input)     #blank line
+        allocate_space!(input, pro.projection_down, phase)
+        read_weight!(input, pro.projection_down, phase)
+    else
+        pro = Projection()
+        allocate_space!(input, pro, phase)
+        read_weight!(input, pro, phase)
+    end
 
     close(input)
     return pro
 end
 
 
-"""
-    save_procar(projection::Projection,
-        filename::String="PROCAR",
-        squared_only::Bool=true)
-        output = open(filename, "w")
-
-Save projection of wave function ⟨Yₗₘ|ϕₙₖ⟩ into PROCAR file.
-
-# Arguments
-- `projection::Projection`: projection of wave function
-- `filename::String="PROCAR"`: name of output file
-- `squared_only::Bool=true`: only output squared projection |⟨Yₗₘ|ϕₙₖ⟩|²
-"""
-function save_procar(projection::Projection,
-    filename::String="PROCAR",
-    squared_only::Bool=true)
-    output = open(filename, "w")
-
-    write(output, "PROCAR ", squared_only ? "lm decomposed\n" : "lm decomposed + phse\n")
+function write_projection(output, pro, squared_only)
     write(output, "$(@sprintf("# of k-points:\t%d\t# of bands:\t%d\t# of ions:\t%d\n",
         projection.number_kpoints,
         projection.number_bands,
@@ -159,6 +159,37 @@ function save_procar(projection::Projection,
                 sum(projection.projection_square[i, j, :, :])))")
             #todo: write projection
         end
+    end
+    return nothing
+end
+
+
+"""
+    save_procar(projection::Projection,
+        filename::String="PROCAR";
+        squared_only::Bool=true)
+        output = open(filename, "w")
+
+Save projection of wave function ⟨Yₗₘ|ϕₙₖ⟩ into PROCAR file.
+
+# Arguments
+- `projection::AbstractProjection`: projection of wave function
+- `filename::String="PROCAR"`: name of output file
+- `squared_only::Bool=true`: only output squared projection |⟨Yₗₘ|ϕₙₖ⟩|² or not
+"""
+function save_procar(projection::AbstractProjection,
+    filename::String="PROCAR";
+    squared_only::Bool=true)
+    output = open(filename, "w")
+
+    write(output, "PROCAR ", squared_only ? "lm decomposed\n" : "lm decomposed + phse\n")
+
+    if typeof(projection) == ProjectionWithSpin
+        write_projection(output, projection.projection_up, squared_only)
+        write(output, "\n")     #blank line
+        write_projection(output, projection.projection_down, squared_only)
+    else
+        write_projection(output, projection, squared_only)
     end
 
     close(output)
