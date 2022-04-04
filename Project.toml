@@ -1,7 +1,10 @@
 name = "MatterEnv"
 uuid = "9a24efd3-56f5-4b6c-a4cc-8c3068a60637"
 authors = ["Yaozhenghang Ma <yaozhenghang.ma@gmail.com> and contributors"]
-version = "0.1.0"
+version = "0.1.1"
+
+[deps]
+Printf = "de0858da-6303-5e67-8744-51eddeeeb8d7"
 
 [compat]
 julia = "1"
