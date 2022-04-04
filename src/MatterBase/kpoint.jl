@@ -14,15 +14,24 @@
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 """
-    Band
+    KPoint
 
-Data type for band structure.
+Data type for k-point.
 
 # Fields
-- `occupancy::Real`: stores the occupancy of the band
-- `energy::Array{<:Real, 1}`: stores the energy values at each k-points
+- `weight::Real`: stores the weight of k-point
+- `coordinate::Array{<:Real, 1}`: stores the coordinate of k-point
 """
-mutable struct Band
-    occupancy::Real
-    energy::Array{<:Real, 1}
+mutable struct KPoint
+    weight::Real
+    coordinate::Array{<:Real, 1}
+end
+
+KPoint() = KPoint(0.0, zeros(3))
+
+
+function Base.:(==)(kpoint1::KPoint, kpoint2::KPoint)
+    kpoint1.weight == kpoint2.weight || return false
+    kpoint1.coordinate == kpoint2.coordinate || return false
+    return true
 end

@@ -15,9 +15,9 @@
 
 using Printf
 
-include("../Atomic/kpoint.jl")
-include("../Atomic/band.jl")
-include("../Atomic/projection.jl")
+include("../MatterBase/kpoint.jl")
+include("../MatterBase/band.jl")
+include("../MatterBase/projection.jl")
 
 function read_weight!(input, projection, phase)
     for i in 1:projection.number_kpoints

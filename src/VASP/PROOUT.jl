@@ -13,9 +13,9 @@
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-include("../Atomic/kpoint.jl")
-include("../Atomic/band.jl")
-include("../Atomic/projection.jl")
+include("../MatterBase/kpoint.jl")
+include("../MatterBase/band.jl")
+include("../MatterBase/projection.jl")
 
 function load_proout(filename::String="PROOUT")
     input = open(filename, "r")

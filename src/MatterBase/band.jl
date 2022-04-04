@@ -13,16 +13,30 @@
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-"""
-    KPoint
+abstract type AbstractBand end
 
-Data type for k-point.
+
+"""
+    Band <: AbstractBand
+
+Data type for band structure.
 
 # Fields
-- `weight::Real`: stores the weight of k-point
-- `coordinate::Array{<:Real, 1}`: stores the coordinate of k-point
+- `occupancy::Real`: stores the occupancy of the band
+- `energy::Array{<:Real, 1}`: stores the energy values at each k-points
 """
-mutable struct KPoint
-    weight::Real
-    coordinate::Array{<:Real, 1}
+mutable struct Band <: AbstractBand
+    occupancy::Real
+    energy::Array{<:Real, 1}
 end
+
+Band() = Band(0.0, Array{Float64, 1}([]))
+Band(number_kpoints::Int) = Band(0.0, zeros(number_kpoints))
+
+mutable struct BandWithSpin <: AbstractBand
+    band_up::Band
+    band_down::Band
+end
+
+BandWithSpin() = BandWithSpin(Band(), Band())
+BandWithSpin(number_kpoints::Int) = BandWithSpin(Band(number_kpoints), Band(number_kpoints))
