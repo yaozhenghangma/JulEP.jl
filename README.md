@@ -1,4 +1,6 @@
-# MatterEnv
+![MatterEnv Logo](MatterEnv_logo.jpeg)
+
+---
 
 MatterEnv is an atomic environment package embedded in [Julia](https://julialang.org/).
 
