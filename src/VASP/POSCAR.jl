@@ -45,7 +45,7 @@ function load_poscar(filename::String="POSCAR")
     cell.lattice = Lattice(lattice_matrix)
     #chemical symbols and numbers of elements
     cell.symbols = split(strip(readline(input)))
-    cell.numbers = parse.(Int32, split(strip(readline(input))))
+    cell.numbers = parse.(Int, split(strip(readline(input))))
     #coordinate
     line = strip(readline(input))
     direct_coordinate = (line[1] == 'D' || line[1] == 'd')

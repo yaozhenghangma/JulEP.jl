@@ -19,33 +19,33 @@ include("../Atomic/kpoint.jl")
 include("../Atomic/band.jl")
 include("../Atomic/projection.jl")
 
-function read_weight!(input, pro, phase)
-    for i in 1:pro.number_kpoints
+function read_weight!(input, projection, phase)
+    for i in 1:projection.number_kpoints
         readline(input)     #blank line
         split_line = split(strip(readline(input)))      #kpoint: coordinate and weight
-        push!(pro.kpoints, KPoint(0.0, Array{Float64, 1}([0.0; 0.0; 0.0])))
-        pro.kpoints[i].coordinate[1] = parse(Float64, split_line[4])
-        pro.kpoints[i].coordinate[2] = parse(Float64, split_line[5])
-        pro.kpoints[i].coordinate[3] = parse(Float64, split_line[6])
-        pro.kpoints[i].weight = parse(Float64, split_line[9])
+        push!(projection.kpoints, KPoint(0.0, Array{Float64, 1}([0.0; 0.0; 0.0])))
+        projection.kpoints[i].coordinate[1] = parse(Float64, split_line[4])
+        projection.kpoints[i].coordinate[2] = parse(Float64, split_line[5])
+        projection.kpoints[i].coordinate[3] = parse(Float64, split_line[6])
+        projection.kpoints[i].weight = parse(Float64, split_line[9])
         readline(input)     #blank line
-        for j in 1:pro.number_bands
+        for j in 1:projection.number_bands
             split_line = split(strip(readline(input)))     #band
-            pro.bands[j].energy[i] = parse(Float64, split_line[5])
-            pro.bands[j].occupancy = parse(Float64, split_line[8])
+            projection.bands[j].energy[i] = parse(Float64, split_line[5])
+            projection.bands[j].occupancy = parse(Float64, split_line[8])
             readline(input)     #blank line
             readline(input)     #orbit
-            for k in 1:pro.number_ions
+            for k in 1:projection.number_ions
                 split_line = parse.(Float64, split(strip(readline(input))))     #projection
-                pro.projection_square[i, j, k, 1:9] = split_line[2:10]
+                projection.projection_square[i, j, k, 1:9] = split_line[2:10]
             end
             readline(input)     #sum of projection over ions
             if phase
                 readline(input)     #orbit
-                for k in 1:pro.number_ions
+                for k in 1:projection.number_ions
                     split_line = parse.(Float64, split(strip(readline(input))))  #projection
                     for l in 1:9
-                        pro.projection[i, j, k, l] =
+                        projection.projection[i, j, k, l] =
                             complex(split_line[2*l], split_line[2*l+1])
                     end
                 end
@@ -58,23 +58,32 @@ function read_weight!(input, pro, phase)
 end
 
 
-function allocate_space!(input, pro, phase)
+function allocate_space!(input, projection, phase)
     split_line = split(strip(readline(input)))      #k-points, bands and ions
-    pro.number_kpoints = parse(Int32, split_line[4])
-    pro.number_bands = parse(Int32, split_line[8])
-    pro.number_ions = parse(Int32, split_line[12])
+    projection.number_kpoints = parse(Int, split_line[4])
+    projection.number_bands = parse(Int, split_line[8])
+    projection.number_ions = parse(Int, split_line[12])
     if phase
-        pro.projection = Array{ComplexF64, 4}(
-            complex.(zeros(pro.number_kpoints, pro.number_bands, pro.number_ions, 9),
-            zeros(pro.number_kpoints, pro.number_bands, pro.number_ions, 9)))
-        pro.projection_square = Array{Float64, 4}(
-            zeros(pro.number_kpoints, pro.number_bands, pro.number_ions, 9))
+        projection.projection = Array{ComplexF64, 4}(
+            complex.(zeros(projection.number_kpoints,
+                    projection.number_bands,
+                    projection.number_ions, 9),
+                zeros(projection.number_kpoints,
+                    projection.number_bands,
+                    projection.number_ions, 9)))
+        projection.projection_square = Array{Float64, 4}(
+            zeros(projection.number_kpoints,
+                projection.number_bands,
+                projection.number_ions, 9))
     else
-        pro.projection_square = Array{Float64, 4}(
-            zeros(pro.number_kpoints, pro.number_bands, pro.number_ions, 9))
+        projection.projection_square = Array{Float64, 4}(
+            zeros(projection.number_kpoints,
+                projection.number_bands,
+                projection.number_ions, 9))
     end
-    for j in 1:pro.number_bands
-        push!(pro.bands, Band(0.0, Array{Float64, 1}(zeros(pro.number_kpoints))))
+    for j in 1:projection.number_bands
+        push!(projection.bands,
+            Band(0.0, Array{Float64, 1}(zeros(projection.number_kpoints))))
     end
     return nothing
 end
@@ -105,24 +114,23 @@ function load_procar(filename::String="PROCAR", spin::Bool=false)
     end
 
     if spin
-        pro = ProjectionWithSpin()
-        allocate_space!(input, pro.projection_up, phase)
-        read_weight!(input, pro.projection_up, phase)
-        readline(input)     #blank line
-        allocate_space!(input, pro.projection_down, phase)
-        read_weight!(input, pro.projection_down, phase)
+        projection = ProjectionWithSpin()
+        allocate_space!(input, projection.projection_up, phase)
+        read_weight!(input, projection.projection_up, phase)
+        allocate_space!(input, projection.projection_down, phase)
+        read_weight!(input, projection.projection_down, phase)
     else
-        pro = Projection()
-        allocate_space!(input, pro, phase)
-        read_weight!(input, pro, phase)
+        projection = Projection()
+        allocate_space!(input, projection, phase)
+        read_weight!(input, projection, phase)
     end
 
     close(input)
-    return pro
+    return projection
 end
 
 
-function write_projection(output, pro, squared_only)
+function write_projection(output, projection, squared_only)
     write(output, "$(@sprintf("# of k-points:\t%d\t# of bands:\t%d\t# of ions:\t%d\n",
         projection.number_kpoints,
         projection.number_bands,
@@ -183,8 +191,8 @@ function save_procar(projection::AbstractProjection,
     output = open(filename, "w")
 
     write(output, "PROCAR ", squared_only ? "lm decomposed\n" : "lm decomposed + phse\n")
-
     if typeof(projection) == ProjectionWithSpin
+        print(typeof(projection))
         write_projection(output, projection.projection_up, squared_only)
         write(output, "\n")     #blank line
         write_projection(output, projection.projection_down, squared_only)

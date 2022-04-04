@@ -105,7 +105,7 @@ mutable struct Cell
     Cell() = Cell(" ",
         Lattice(Array{Float64, 2}(zeros(3, 3))),
         Array{Atom{Float64}, 1}([]),
-        Array{Int32, 1}([]),
+        Array{Int, 1}([]),
         Array{String, 1}([]))
     Cell(name, lattice, atoms, numbers, symbols) =
         new(name, lattice, atoms, numbers, symbols)

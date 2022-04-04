@@ -27,9 +27,9 @@ function load_proout(filename::String="PROOUT")
 
     readline(input)     #comment line
     split_line = split(strip(readline(input)))      #kpoints, bands and ions
-    pro.number_kpoints = parse(Int32, split_line[4])
-    pro.number_bands = parse(Int32, split_line[8])
-    pro.number_ions = parse(Int32, split_line[12])
+    pro.number_kpoints = parse(Int, split_line[4])
+    pro.number_bands = parse(Int, split_line[8])
+    pro.number_ions = parse(Int, split_line[12])
     split_line = parse.(Int, split(strip(readline(input))))      #type and ions
     number_type = split_line[1]
     number_ions = Int.(zeros(number_type))
@@ -38,7 +38,7 @@ function load_proout(filename::String="PROOUT")
     end
 
     #occupancy
-    number_line = Int32(ceil(pro.number_kpoints*pro.number_bands/9.0))
+    number_line = Int(ceil(pro.number_kpoints*pro.number_bands/9.0))
     for i in 1:number_line
         readline(input)
     end
