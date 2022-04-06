@@ -14,7 +14,7 @@
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 abstract type AbstractBand end
-abstract type AbstractBands <:AbstractArray end
+abstract type AbstractBands end
 
 
 """
@@ -48,11 +48,15 @@ mutable struct Bands <: AbstractBands
 end
 
 Bands() = Bands(Array{Band, 1}([]))
-Bands(number_bands::Integer) = Bands(fill(Band(), number_bands))
+Bands(number_bands::Integer) = Bands([Band() for i in 1:number_bands])
 Bands(number_bands::Integer, number_kpoints::Integer) =
-    Bands(fill(Band(number_kpoints), number_bands))
+    Bands([Band(number_kpoints) for i in 1:number_bands])
 
-getindex(bands::Bands, i) = bands.bands[i]
+Base.getindex(bands::Bands, i) = bands.bands[i]
+Base.setindex!(bands::Bands, band::Band, i) = (bands.bands[i] = band)
+Base.iterate(bands::Bands) = (bands[1], 2)
+Base.iterate(bands::Bands, state=1) =
+    state > length(bands.bands) ? nothing : (bands[state], state+1)
 
 
 """
@@ -71,9 +75,9 @@ end
 
 BandsWithSpin() = BandsWithSpin(Bands(), Bands())
 BandsWithSpin(number_bands::Integer) =
-    Bands(fill(Band(), number_bands), fill(Band(), number_bands))
+    BandsWithSpin(Bands(number_bands), Bands(number_bands))
 BandsWithSpin(number_bands::Integer, number_kpoints::Integer) =
-    Bands(fill(Band(number_kpoints), number_bands),
-        fill(Band(number_kpoints), number_bands))
+    BandsWithSpin(Bands(number_bands, number_kpoints),
+        Bands(number_bands, number_kpoints))
 
-getindex(bands::BandsWithSpin, i) = (bands.bands_up[i], bands.bands_down[i])
+Base.getindex(bands::BandsWithSpin, i) = (bands.bands_up[i], bands.bands_down[i])

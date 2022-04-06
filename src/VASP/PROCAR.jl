@@ -63,10 +63,10 @@ function allocate_space!(input, projection, phase)
     projection.number_bands = parse(Int, split_line[8])
     projection.number_ions = parse(Int, split_line[12])
     if phase
-        projection.projection = fill(complex(0),
+        projection.projection = complex(zeros(
             projection.number_kpoints,
             projection.number_bands,
-            projection.number_ions, 9)
+            projection.number_ions, 9))
         projection.projection_square = zeros(projection.number_kpoints,
             projection.number_bands,
             projection.number_ions, 9)
@@ -111,7 +111,7 @@ function load_procar(filename::String="PROCAR", spin::Bool=false)
         allocate_space!(input, projection.projection_up, phase)
         bands = BandsWithSpin(projection.projection_up.number_bands,
             projection.projection_up.number_kpoints)
-        kpoints = fill(KPoint(), projection.projection_up.number_kpoints)
+        kpoints = [KPoint() for i in 1:projection.projection_up.number_kpoints]
         read_weight!(input, projection.projection_up, kpoints, bands.bands_up, phase)
         allocate_space!(input, projection.projection_down, phase)
         read_weight!(input, projection.projection_down, kpoints, bands.bands_down, phase)
@@ -119,7 +119,7 @@ function load_procar(filename::String="PROCAR", spin::Bool=false)
         projection = Projection()
         allocate_space!(input, projection, phase)
         bands = Bands(projection.number_bands, projection.number_kpoints)
-        kpoints = fill(KPoint(), projection.number_kpoints)
+        kpoints = [KPoint() for i in 1:projection.number_kpoints]
         read_weight!(input, projection, kpoints, bands, phase)
     end
 
