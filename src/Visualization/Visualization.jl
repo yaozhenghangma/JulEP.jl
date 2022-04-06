@@ -13,10 +13,7 @@
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-module MatterEnv
+include("band.jl")
+export plot_band!, plot_bands!
 
-include("MatterBase/MatterBase.jl")
-include("VASP/VASP.jl")
-include("Visualization/Visualization.jl")
-
-end
+include("kpoint.jl")

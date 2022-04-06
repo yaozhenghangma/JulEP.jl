@@ -13,10 +13,18 @@
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-module MatterEnv
+include("../MatterBase/kpoint.jl")
 
-include("MatterBase/MatterBase.jl")
-include("VASP/VASP.jl")
-include("Visualization/Visualization.jl")
 
+function index_kpoints(kpoints)
+    index = Array{Int, 1}([])
+    ind = 1
+    for i in 1:length(kpoints)-1
+        push!(index, ind)
+        if kpoints[i] != kpoints[i+1]
+            ind += 1
+        end
+    end
+    push!(index, ind)
+    return index, ind
 end
