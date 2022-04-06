@@ -19,20 +19,19 @@ include("../MatterBase/kpoint.jl")
 include("../MatterBase/band.jl")
 include("../MatterBase/projection.jl")
 
-function read_weight!(input, projection, phase)
+function read_weight!(input, projection, kpoints, bands, phase)
     for i in 1:projection.number_kpoints
         readline(input)     #blank line
         split_line = split(strip(readline(input)))      #kpoint: coordinate and weight
-        push!(projection.kpoints, KPoint(0.0, Array{Float64, 1}([0.0; 0.0; 0.0])))
-        projection.kpoints[i].coordinate[1] = parse(Float64, split_line[4])
-        projection.kpoints[i].coordinate[2] = parse(Float64, split_line[5])
-        projection.kpoints[i].coordinate[3] = parse(Float64, split_line[6])
-        projection.kpoints[i].weight = parse(Float64, split_line[9])
+        kpoints[i].coordinate[1] = parse(Float64, split_line[4])
+        kpoints[i].coordinate[2] = parse(Float64, split_line[5])
+        kpoints[i].coordinate[3] = parse(Float64, split_line[6])
+        kpoints[i].weight = parse(Float64, split_line[9])
         readline(input)     #blank line
         for j in 1:projection.number_bands
             split_line = split(strip(readline(input)))     #band
-            projection.bands[j].energy[i] = parse(Float64, split_line[5])
-            projection.bands[j].occupancy = parse(Float64, split_line[8])
+            bands[j].energy[i] = parse(Float64, split_line[5])
+            bands[j].occupancy = parse(Float64, split_line[8])
             readline(input)     #blank line
             readline(input)     #orbit
             for k in 1:projection.number_ions
@@ -64,33 +63,24 @@ function allocate_space!(input, projection, phase)
     projection.number_bands = parse(Int, split_line[8])
     projection.number_ions = parse(Int, split_line[12])
     if phase
-        projection.projection = Array{ComplexF64, 4}(
-            complex.(zeros(projection.number_kpoints,
-                    projection.number_bands,
-                    projection.number_ions, 9),
-                zeros(projection.number_kpoints,
-                    projection.number_bands,
-                    projection.number_ions, 9)))
-        projection.projection_square = Array{Float64, 4}(
-            zeros(projection.number_kpoints,
-                projection.number_bands,
-                projection.number_ions, 9))
+        projection.projection = fill(complex(0),
+            projection.number_kpoints,
+            projection.number_bands,
+            projection.number_ions, 9)
+        projection.projection_square = zeros(projection.number_kpoints,
+            projection.number_bands,
+            projection.number_ions, 9)
     else
-        projection.projection_square = Array{Float64, 4}(
-            zeros(projection.number_kpoints,
-                projection.number_bands,
-                projection.number_ions, 9))
-    end
-    for j in 1:projection.number_bands
-        push!(projection.bands,
-            Band(0.0, Array{Float64, 1}(zeros(projection.number_kpoints))))
+        projection.projection_square = zeros(projection.number_kpoints,
+            projection.number_bands,
+            projection.number_ions, 9)
     end
     return nothing
 end
 
 
 """
-    load_procar(filename::String="PROCAR") -> Projection
+    load_procar(filename::String="PROCAR") -> Projection, KPoints, Bands
 
 Load projection of wave function ⟨Yₗₘ|ϕₙₖ⟩ from PROCAR file.
 
@@ -100,6 +90,8 @@ Load projection of wave function ⟨Yₗₘ|ϕₙₖ⟩ from PROCAR file.
 
 # Returns
 - `Projection`: Projection of wave function ⟨Yₗₘ|ϕₙₖ⟩
+- `Array{KPoint, 1}`: metadata of k-points
+- `Bands`: metadata of all bands
 """
 function load_procar(filename::String="PROCAR", spin::Bool=false)
     input = open(filename, "r");
@@ -113,24 +105,30 @@ function load_procar(filename::String="PROCAR", spin::Bool=false)
         end
     end
 
+    kpoints = Array{KPoint, 1}([])
     if spin
         projection = ProjectionWithSpin()
         allocate_space!(input, projection.projection_up, phase)
-        read_weight!(input, projection.projection_up, phase)
+        bands = BandsWithSpin(projection.projection_up.number_bands,
+            projection.projection_up.number_kpoints)
+        kpoints = fill(KPoint(), projection.projection_up.number_kpoints)
+        read_weight!(input, projection.projection_up, kpoints, bands.bands_up, phase)
         allocate_space!(input, projection.projection_down, phase)
-        read_weight!(input, projection.projection_down, phase)
+        read_weight!(input, projection.projection_down, kpoints, bands.bands_down, phase)
     else
         projection = Projection()
         allocate_space!(input, projection, phase)
-        read_weight!(input, projection, phase)
+        bands = Bands(projection.number_bands, projection.number_kpoints)
+        kpoints = fill(KPoint(), projection.number_kpoints)
+        read_weight!(input, projection, kpoints, bands, phase)
     end
 
     close(input)
-    return projection
+    return projection, kpoints, bands
 end
 
 
-function write_projection(output, projection, squared_only)
+function write_projection(output, projection, kpoints, bands, squared_only)
     write(output, "$(@sprintf("# of k-points:\t%d\t# of bands:\t%d\t# of ions:\t%d\n",
         projection.number_kpoints,
         projection.number_bands,
@@ -139,15 +137,15 @@ function write_projection(output, projection, squared_only)
     for i in 1:projection.number_kpoints
         write(output, "$(@sprintf("\n k-point\t%d :\t%.7f %.7f %.7f\tweight = %.7f\n",
             i,
-            projection.kpoints[i].coordinate[1],
-            projection.kpoints[i].coordinate[2],
-            projection.kpoints[i].coordinate[3],
-            projection.kpoints[i].weight))")
+            kpoints[i].coordinate[1],
+            kpoints[i].coordinate[2],
+            kpoints[i].coordinate[3],
+            kpoints[i].weight))")
         for j in 1:projection.number_bands
             write(output, "$(@sprintf("\nband\t%d # energy\t%.7f # occ.\t%.7f\n",
                 j,
-                projection.bands[j].energy[i],
-                projection.bands[j].occupancy))")
+                bands[j].energy[i],
+                bands[j].occupancy))")
             write(output, "\nion\t\ts\tpy\tpz\tpx\tdxy\tdyz\tdz2\tdxz\tx2-y2\ttot\n")
             for k in 1:projection.number_ions
                 write(output, "$(@sprintf("\t%d\t", k))")
@@ -172,8 +170,16 @@ function write_projection(output, projection, squared_only)
 end
 
 
+save_procar_type_assert(projection::Projection, bands::Bands) = true
+save_procar_type_assert(projection::ProjectionWithSpin, bands::BandsWithSpin) = true
+save_procar_type_assert(projection::T1, bands::T2) where {T1, T2} =
+    error("projection type $T1 doesn't match band type $T2.")
+
+
 """
     save_procar(projection::Projection,
+        kpoints::Array{KPoint, 1},
+        bands::AbstractBands,
         filename::String="PROCAR";
         squared_only::Bool=true)
         output = open(filename, "w")
@@ -182,22 +188,30 @@ Save projection of wave function ⟨Yₗₘ|ϕₙₖ⟩ into PROCAR file.
 
 # Arguments
 - `projection::AbstractProjection`: projection of wave function
+- `kpoints::Array{KPoint, 1}`: metadata of k-points
+- `bands::AbstractBands`: metadata of bands
 - `filename::String="PROCAR"`: name of output file
 - `squared_only::Bool=true`: only output squared projection |⟨Yₗₘ|ϕₙₖ⟩|² or not
 """
 function save_procar(projection::AbstractProjection,
+    kpoints::Array{KPoint, 1},
+    bands::AbstractBands,
     filename::String="PROCAR";
     squared_only::Bool=true)
     output = open(filename, "w")
 
+    save_procar_type_assert(projection, bands)
+
     write(output, "PROCAR ", squared_only ? "lm decomposed\n" : "lm decomposed + phse\n")
     if typeof(projection) == ProjectionWithSpin
         print(typeof(projection))
-        write_projection(output, projection.projection_up, squared_only)
+        write_projection(output, projection.projection_up,
+            kpoints, bands.bands_up, squared_only)
         write(output, "\n")     #blank line
-        write_projection(output, projection.projection_down, squared_only)
+        write_projection(output, projection.projection_down,
+            kpoints, bands.bands_down, squared_only)
     else
-        write_projection(output, projection, squared_only)
+        write_projection(output, projection, kpoints, bands, squared_only)
     end
 
     close(output)

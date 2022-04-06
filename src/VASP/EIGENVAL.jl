@@ -19,15 +19,9 @@ include("../MatterBase/kpoint.jl")
 
 function allocate_band!(spin, number_kpoints, number_bands)
     if spin
-        bands = Array{BandWithSpin, 1}([])
-        for i in 1:number_bands
-            push!(bands, BandWithSpin(number_kpoints))
-        end
+        bands = BandsWithSpin(number_bands, number_kpoints)
     else
-        bands = Array{Band, 1}([])
-        for i in 1:number_bands
-            push!(bands, Band(number_kpoints))
-        end
+        bands = Band(number_bands, number_kpoints)
     end
 
     return bands
@@ -43,10 +37,10 @@ function read_bands!(input, kpoints, bands, number_kpoints, number_bands, spin)
         for j in 1:number_bands
             split_line = parse.(Float64, split(strip(readline(input))))     #energy and occ.
             if spin
-                bands[j].band_up.energy[i] = split_line[2]
-                bands[j].band_down.energy[i] = split_line[3]
-                bands[j].band_up.occupancy = split_line[4]
-                bands[j].band_down.occupancy = split_line[5]
+                bands.bands_up[j].energy[i] = split_line[2]
+                bands.bands_down[j].energy[i] = split_line[3]
+                bands.bands_up[j].occupancy = split_line[4]
+                bands.bands_down[j].occupancy = split_line[5]
             else
                 bands[j].energy[i] = split_line[2]
                 bands[j].occupancy = split_line[3]
@@ -67,7 +61,7 @@ Load band structure from EIVENVAL file.
 - `spin::Bool=false`: distingush spin up and spin down or not
 
 # Returns
-- `Array{Band, 1}`: Eigen-values of energy in each k-points
+- `Bands`: Eigen-values of energy in each k-points
 - `Array{KPoint, 1}`: K-points and weight
 """
 function load_eigenval(filename::String="EIGENVAL", spin::Bool=false)

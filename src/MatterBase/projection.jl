@@ -27,8 +27,6 @@ Data type for projection of wave function.
 - `number_kpoints::Integer`: stores the number of k-points
 - `number_bands::Integer`: stores the number of bands
 - `number_ions::Integer`: stores the number of ions
-- `kpoints::Array{KPoint, 1}`: stores the metadata of k-points
-- `bands::Array{Band, 1}`: stroes the metadats of bands
 - `projection::Array{<:Complex, 4}`: stores the projection ⟨Yₗₘ|ϕₙₖ⟩. The index order is
     [kpoint number, band number, ion number, orbit number]
 - `projection_square::Array{<:Real, 4}`: stores the squared projection |⟨Yₗₘ|ϕₙₖ⟩|². The
@@ -38,15 +36,11 @@ mutable struct Projection <: AbstractProjection
     number_kpoints::Integer
     number_bands::Integer
     number_ions::Integer
-    kpoints::Array{KPoint, 1}
-    bands::Array{Band, 1}
     projection::Array{<:Complex, 4}
     projection_square::Array{<:Real, 4}
 end
 
 Projection() = Projection(0, 0, 0,
-    Array{KPoint, 1}([]),
-    Array{Band, 1}([]),
     Array{ComplexF64, 4}(complex.(zeros(1, 1, 1, 1), zeros(1, 1, 1, 1))),
     Array{Float64, 4}(zeros(1, 1, 1, 1)))
 
