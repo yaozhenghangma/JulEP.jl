@@ -40,7 +40,7 @@ mutable struct Projection <: AbstractProjection
     projection_square::Array{<:Real, 4}
 end
 
-Projection() = Projection(0, 0, 0,
+Projection() = Projection(1, 1, 1,
     Array{ComplexF64, 4}(complex.(zeros(1, 1, 1, 1), zeros(1, 1, 1, 1))),
     Array{Float64, 4}(zeros(1, 1, 1, 1)))
 

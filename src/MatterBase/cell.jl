@@ -58,14 +58,16 @@ struct Lattice{T <: Real}
     a::Array{T, 1}
     b::Array{T, 1}
     c::Array{T, 1}
-
-    function Lattice(lattice::Array{T, 2}) where T<:Real
-        a = lattice[1, 1:3]
-        b = lattice[2, 1:3]
-        c = lattice[3, 1:3]
-        return new{T}(lattice, a, b, c)
-    end
 end
+
+function Lattice(lattice::Array{T, 2}) where T<:Real
+    a = lattice[1, 1:3]
+    b = lattice[2, 1:3]
+    c = lattice[3, 1:3]
+    return Lattice(lattice, a, b, c)
+end
+
+Lattice() = Lattice(float([1 0 0; 0 1 0; 0 0 1]))
 
 function (lattice::Lattice)()
     return lattice.lattice
@@ -101,15 +103,12 @@ mutable struct Cell
     atoms::Array{Atom{<:Real}, 1}
     numbers::Array{<:Integer, 1}
     symbols::Array{String, 1}
-
-    Cell() = Cell(" ",
-        Lattice(Array{Float64, 2}(zeros(3, 3))),
-        Array{Atom{Float64}, 1}([]),
-        Array{Int, 1}([]),
-        Array{String, 1}([]))
-    Cell(name, lattice, atoms, numbers, symbols) =
-        new(name, lattice, atoms, numbers, symbols)
 end
+Cell() = Cell(" ",
+    Lattice(Array{Float64, 2}(zeros(3, 3))),
+    Array{Atom{Float64}, 1}([]),
+    Array{Int, 1}([]),
+    Array{String, 1}([]))
 
 function (cell::Cell)()
     return cell.name, cell.lattice()

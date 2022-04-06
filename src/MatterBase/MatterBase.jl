@@ -13,9 +13,16 @@
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-module MatterEnv
+include("cell.jl")
+export Atom, Cell, Lattice
 
-include("MatterBase/MatterBase.jl")
-include("VASP/VASP.jl")
+include("band.jl")
+export AbstractBand, AbstractBands
+export Band, Bands, BandsWithSpin
 
-end
+include("kpoint.jl")
+export KPoint
+
+include("projection.jl")
+export AbstractProjection
+export Projection, ProjectionWithSpin

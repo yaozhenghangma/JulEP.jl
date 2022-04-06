@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.1.2]
+### Added
+- load EIGENVAL
+
+### Removed
+- bands and kpoints metadata in Projection type
+
 ## [0.1.1]
 ### Added
 - type for band, k-point and projection
@@ -17,5 +24,6 @@ All notable changes to this project will be documented in this file.
 - load and save POSCAR
 
 [Unreleased]: https://github.com/yaozhenghangma/MatterEnv/blob/main/CHANGELOG.md
+[0.1.2]: https://github.com/yaozhenghangma/MatterEnv.jl/tree/v0.1.2
 [0.1.1]: https://github.com/yaozhenghangma/MatterEnv.jl/tree/v0.1.1
 [0.1.0]: https://github.com/yaozhenghangma/MatterEnv.jl/tree/v0.1.0

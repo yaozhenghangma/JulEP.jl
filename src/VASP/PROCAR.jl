@@ -182,7 +182,6 @@ save_procar_type_assert(projection::T1, bands::T2) where {T1, T2} =
         bands::AbstractBands,
         filename::String="PROCAR";
         squared_only::Bool=true)
-        output = open(filename, "w")
 
 Save projection of wave function ⟨Yₗₘ|ϕₙₖ⟩ into PROCAR file.
 
