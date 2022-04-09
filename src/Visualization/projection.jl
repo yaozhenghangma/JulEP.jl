@@ -50,17 +50,20 @@ function plot_projection!(
     orbit::Int = nothing,
     color::Symbol = :red,
     magnify::Real = 10,
+    max_size::Real = 5,
     tolerance::Real = 0)
 
     index,  = index_kpoints(kpoints)
     for i in 1:projection.number_bands, j in 1:projection.number_kpoints
         if projection.projection_square[j, i, ion, orbit] > tolerance
+            marker_size = magnify*projection.projection_square[j, i, ion, orbit]
+            marker_size = (marker_size > max_size) ? max_size : marker_size
             plot!([index[j]], [bands[i].energy[j]],
                 seriestype = :scatter,
                 markercolor = color,
-                markersize = magnify * projection.projection_square[j, i, ion, orbit],
+                markersize = marker_size,
                 markerstrokealpha = 0,
-                markerstrokecolor = :white)
+                markerstrokecolor = color)
         end
     end
     return nothing
@@ -98,10 +101,13 @@ function plot_projection!(
     orbit::Int = nothing,
     color::Symbol = :red,
     magnify::Real = 10,
+    max_size::Real = 5,
     tolerance::Real = 0)
     plot_projection!(projection.projection_up, kpoints, bands.bands_up;
-        ion = ion, orbit = orbit, color = color, magnify = magnify, tolerance = tolerance)
+        ion = ion, orbit = orbit, color = color,
+        magnify = magnify, max_size = max_size, tolerance = tolerance)
     plot_projection!(projection.projection_down, kpoints, bands.bands_down;
-        ion = ion, orbit = orbit, color = color, magnify = magnify, tolerance = tolerance)
+        ion = ion, orbit = orbit, color = color,
+        magnify = magnify, max_size = max_size, tolerance = tolerance)
     return nothing
 end
