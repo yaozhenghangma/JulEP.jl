@@ -78,7 +78,7 @@ function plot_bands!(bands::Bands,
     #add dash line at Fermi energy
     x = Array{Int, 1}(1:length(kpoints))
     y = zeros(length(kpoints))
-    plot!(x, y, label=nothing, line_style=(:dash, :gray))
+    plot!(x, y, label=nothing, line=(:dot, :gray))
     return nothing
 end
 

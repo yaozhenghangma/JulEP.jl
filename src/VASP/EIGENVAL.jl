@@ -21,7 +21,7 @@ function allocate_band!(spin, number_kpoints, number_bands)
     if spin
         bands = BandsWithSpin(number_bands, number_kpoints)
     else
-        bands = Band(number_bands, number_kpoints)
+        bands = Bands(number_bands, number_kpoints)
     end
 
     return bands
