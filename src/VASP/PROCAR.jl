@@ -19,7 +19,7 @@ include("../MatterBase/kpoint.jl")
 include("../MatterBase/band.jl")
 include("../MatterBase/projection.jl")
 
-function read_weight!(input, projection, kpoints, bands, phase)
+function read_weight!(input, projection, kpoints, bands, phase, noncolinear)
     for i in 1:projection.number_kpoints
         readline(input)     #blank line
         split_line = split(strip(readline(input)))      #kpoint: coordinate and weight
@@ -39,6 +39,9 @@ function read_weight!(input, projection, kpoints, bands, phase)
                 projection.projection_square[i, j, k, 1:9] = split_line[2:10]
             end
             readline(input)     #sum of projection over ions
+            for l in 1:3, k in 1:projection.number_ions+1
+                readline(input)     #projection on x, y or z spin direction (neglected)
+            end
             if phase
                 readline(input)     #orbit
                 for k in 1:projection.number_ions
@@ -86,20 +89,21 @@ Load projection of wave function ⟨Yₗₘ|ϕₙₖ⟩ from PROCAR file.
 
 # Arguments
 - `filename::String="PROCAR"`: name of input file
-- `spin::Bool=false`: distingush spin up and spin down or not
+- `spin::Bool=false`: ISPIN = 0(false) or 1(true)
+- `noncolinear::Bool=false`: INONCOLINEAR = 0(false) or 1(true)
 
 # Returns
 - `Projection`: Projection of wave function ⟨Yₗₘ|ϕₙₖ⟩
 - `Array{KPoint, 1}`: metadata of k-points
 - `Bands`: metadata of all bands
 """
-function load_procar(filename::String="PROCAR", spin::Bool=false)
+function load_procar(filename::String="PROCAR"; spin::Bool=false, noncolinear::Bool=false)
     input = open(filename, "r");
 
     phase = false
     split_line = split(strip(readline(input)))      #comment line
     for word in split_line
-        if word == "phase"
+        if occursin(r"phase*", word)
             phase = true
             break
         end
@@ -112,15 +116,17 @@ function load_procar(filename::String="PROCAR", spin::Bool=false)
         bands = BandsWithSpin(projection.projection_up.number_bands,
             projection.projection_up.number_kpoints)
         kpoints = [KPoint() for i in 1:projection.projection_up.number_kpoints]
-        read_weight!(input, projection.projection_up, kpoints, bands.bands_up, phase)
+        read_weight!(input, projection.projection_up, kpoints, bands.bands_up,
+            phase, false)
         allocate_space!(input, projection.projection_down, phase)
-        read_weight!(input, projection.projection_down, kpoints, bands.bands_down, phase)
+        read_weight!(input, projection.projection_down, kpoints, bands.bands_down,
+            phase, false)
     else
         projection = Projection()
         allocate_space!(input, projection, phase)
         bands = Bands(projection.number_bands, projection.number_kpoints)
         kpoints = [KPoint() for i in 1:projection.number_kpoints]
-        read_weight!(input, projection, kpoints, bands, phase)
+        read_weight!(input, projection, kpoints, bands, phase, noncolinear)
     end
 
     close(input)
