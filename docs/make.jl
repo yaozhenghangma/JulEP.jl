@@ -12,9 +12,16 @@ makedocs(;
         prettyurls=get(ENV, "CI", "false") == "true",
         canonical="https://yaozhenghangma.github.io/MatterEnv.jl",
         assets=String[],
+        collapselevel = 1,
+        sidebar_sitename = false,
     ),
     pages=[
         "Home" => "index.md",
+        "API Reference" => [
+            "reference/MatterBase.md",
+            "reference/Visualization.md",
+            "reference/VASP.md",
+        ],
     ],
 )
 
