@@ -54,7 +54,6 @@ Bands(number_bands::Integer, number_kpoints::Integer) =
 
 Base.getindex(bands::Bands, i) = bands.bands[i]
 Base.setindex!(bands::Bands, band::Band, i) = (bands.bands[i] = band)
-Base.iterate(bands::Bands) = (bands[1], 2)
 Base.iterate(bands::Bands, state=1) =
     state > length(bands.bands) ? nothing : (bands[state], state+1)
 

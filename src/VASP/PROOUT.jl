@@ -13,11 +13,6 @@
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-include("../MatterBase/kpoint.jl")
-include("../MatterBase/band.jl")
-include("../MatterBase/projection.jl")
-
-
 """
     load_proout(filename::String="PROOUT") -> Projection
 

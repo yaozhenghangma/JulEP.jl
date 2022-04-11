@@ -13,10 +13,10 @@
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+include("kpoint.jl")
+
 include("band.jl")
 export plot_band!, plot_bands!
-
-include("kpoint.jl")
 
 include("projection.jl")
 export plot_projection!

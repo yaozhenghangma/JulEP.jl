@@ -15,6 +15,9 @@
 
 module MatterEnv
 
+using Printf
+using Plots
+
 include("MatterBase/MatterBase.jl")
 include("VASP/VASP.jl")
 include("Visualization/Visualization.jl")

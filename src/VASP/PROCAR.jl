@@ -13,12 +13,6 @@
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Printf
-
-include("../MatterBase/kpoint.jl")
-include("../MatterBase/band.jl")
-include("../MatterBase/projection.jl")
-
 function read_weight!(input, projection, kpoints, bands, phase, noncolinear)
     for i in 1:projection.number_kpoints
         readline(input)     #blank line

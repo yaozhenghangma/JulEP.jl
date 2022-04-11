@@ -13,12 +13,6 @@
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-include("../MatterBase/projection.jl")
-include("kpoint.jl")
-
-using Plots
-
-
 """
     function plot_projection!(
         projection::Projection,

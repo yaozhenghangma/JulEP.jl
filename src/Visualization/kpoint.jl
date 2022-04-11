@@ -13,9 +13,6 @@
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-include("../MatterBase/kpoint.jl")
-
-
 function index_kpoints(kpoints)
     index = Array{Int, 1}([])
     ind = 1

@@ -13,10 +13,6 @@
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-include("../MatterBase/band.jl")
-include("../MatterBase/kpoint.jl")
-
-
 function allocate_band!(spin, number_kpoints, number_bands)
     if spin
         bands = BandsWithSpin(number_bands, number_kpoints)
