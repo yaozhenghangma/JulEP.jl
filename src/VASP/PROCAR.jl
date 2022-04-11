@@ -39,8 +39,10 @@ function read_weight!(input, projection, kpoints, bands, phase, noncolinear)
                 projection.projection_square[i, j, k, 1:9] = split_line[2:10]
             end
             readline(input)     #sum of projection over ions
-            for l in 1:3, k in 1:projection.number_ions+1
-                readline(input)     #projection on x, y or z spin direction (neglected)
+            if noncolinear
+                for _ in 1:3, _ in 1:projection.number_ions+1
+                    readline(input)     #projection on x, y or z spin direction (neglected)
+                end
             end
             if phase
                 readline(input)     #orbit
@@ -83,7 +85,8 @@ end
 
 
 """
-    load_procar(filename::String="PROCAR") -> Projection, KPoints, Bands
+    load_procar(filename::String="PROCAR"; spin::Bool=false, noncolinear::Bool=false) \
+    -> Projection, KPoints, Bands
 
 Load projection of wave function ⟨Yₗₘ|ϕₙₖ⟩ from PROCAR file.
 

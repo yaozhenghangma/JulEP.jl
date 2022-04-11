@@ -61,7 +61,25 @@ end
     output = open("test_PROCAR", "w")
     write(output, string)
     close(output)
-    projection, kpoints, bands = load_procar("test_PROCAR", false)
+    projection, kpoints, bands = load_procar("test_PROCAR")
     save_procar(projection, kpoints, bands, "test_save_PROCAR")
     @test projection.projection[1, 1, 1, 1] == -0.037+0.235im
+end
+
+@testset "PROOUT.jl" begin
+    string = """
+    PROOUT
+    # of k-points:  1         # of bands:   1         # of ions:    1
+       1   1   1
+      1.000  1.000  1.000  1.000  1.000  1.000  1.000  1.000  1.000
+      0.025336   -0.230682   -0.000000    0.000000    0.000000   -0.000001    0.000000   -0.000000    0.000000
+      -0.000001   -0.000000    0.000000   -0.001458    0.013279   -0.000000    0.000000   -0.000000    0.000000
+      augmentation part
+      -0.005758   -0.000000    0.000000   -0.000000    0.000000    0.000000    0.000030    0.000000    0.000000
+    """
+    output = open("test_PROOUT", "w")
+    write(output, string)
+    close(output)
+    projection = load_proout("test_PROOUT")
+    @test length(projection.projection) == 9
 end

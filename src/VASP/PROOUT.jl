@@ -17,6 +17,18 @@ include("../MatterBase/kpoint.jl")
 include("../MatterBase/band.jl")
 include("../MatterBase/projection.jl")
 
+
+"""
+    load_proout(filename::String="PROOUT") -> Projection
+
+Load projection of wave function ⟨Yₗₘ|ϕₙₖ⟩ from PROOUT file.
+
+# Arguments
+- `filename::String="PROOUT"`: name of input file
+
+# Returns
+- `Projection`: Projection of wave function ⟨Yₗₘ|ϕₙₖ⟩
+"""
 function load_proout(filename::String="PROOUT")
     input = open(filename, "r")
     projection = Projection(0, 0, 0,

@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.1.3]
+### Added
+- Visualize band structure and projected band structure
+
 ## [0.1.2]
 ### Added
 - load EIGENVAL
@@ -24,6 +28,7 @@ All notable changes to this project will be documented in this file.
 - load and save POSCAR
 
 [Unreleased]: https://github.com/yaozhenghangma/MatterEnv/blob/main/CHANGELOG.md
+[0.1.3]: https://github.com/yaozhenghangma/MatterEnv.jl/tree/v0.1.3
 [0.1.2]: https://github.com/yaozhenghangma/MatterEnv.jl/tree/v0.1.2
 [0.1.1]: https://github.com/yaozhenghangma/MatterEnv.jl/tree/v0.1.1
 [0.1.0]: https://github.com/yaozhenghangma/MatterEnv.jl/tree/v0.1.0
