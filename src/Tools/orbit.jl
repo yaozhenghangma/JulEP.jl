@@ -12,15 +12,3 @@
 #
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
-module MatterEnv
-
-using Printf
-using Plots
-
-include("MatterBase/MatterBase.jl")
-include("VASP/VASP.jl")
-include("Tools/Tools.jl")
-include("Visualization/Visualization.jl")
-
-end
