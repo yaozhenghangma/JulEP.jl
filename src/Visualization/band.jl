@@ -14,7 +14,7 @@
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 """
-    function plot_band!(band::Band,
+    plot_band!(band::Band,
         kpoints::Array{KPoint, 1},
         xticks::Array{String, 1} = nothing;
         line_style = (:solid, :black))
@@ -45,12 +45,12 @@ end
 
 
 """
-    function plot_bands!(bands::Bands,
+    plot_bands!(bands::Bands,
         kpoints::Array{KPoint, 1},
         xticks::Array{String, 1} = nothing;
         line_style = (:solid, :black))
 
-Plot one band on current figure.
+Plot all bands on current figure.
 
 # Arguments
 - `bands::Bands`: metadata of all bands
@@ -77,12 +77,12 @@ end
 
 
 """
-    function plot_bands!(bands::BandsWithSpin,
+    plot_bands!(bands::BandsWithSpin,
         kpoints::Array{KPoint, 1},
         xticks::Array{String, 1} = nothing;
         line_style = (:solid, :black))
 
-Plot one band on current figure.
+Plot all bands on current figure.
 
 # Arguments
 - `bands::BandsWithSpin`: metadata of all bands (spin up and spin down)

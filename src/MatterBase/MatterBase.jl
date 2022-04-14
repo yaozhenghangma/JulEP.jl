@@ -26,3 +26,6 @@ export KPoint
 include("projection.jl")
 export AbstractProjection
 export Projection, ProjectionWithSpin
+
+include("dos.jl")
+export DOS

@@ -14,7 +14,7 @@
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 """
-    function plot_projection!(
+    plot_projection!(
         projection::Projection,
         kpoints::Array{KPoint, 1},
         bands::Bands;
@@ -65,7 +65,7 @@ end
 
 
 """
-    function plot_projection!(
+    plot_projection!(
         projection::ProjectionWithSpin,
         kpoints::Array{KPoint, 1},
         bands::BandsWithSpin;
