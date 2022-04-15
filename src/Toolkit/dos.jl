@@ -140,10 +140,10 @@ function generate_pdos(bands::BandsWithSpin, kpoints::Array{KPoint, 1},
     smear::Function=gaussian, energy_number::Integer=10000,
     ions::Array{<:Integer, 1}=nothing, orbits::Array{<:Integer, 1}=nothing)
 
-    pdos1 = generate_dos(bands.bands_up, kpoints, projection.projection_up;
+    pdos1 = generate_pdos(bands.bands_up, kpoints, projection.projection_up;
         smear=smear, energy_number=energy_number, ions=ions, orbits=orbits)
-    pdos2 = generate_dos(bands.bands_down, kpoints, projection.projection_down;
+    pdos2 = generate_pdos(bands.bands_down, kpoints, projection.projection_down;
         smear=smear, energy_number=energy_number, ions=ions, orbits=orbits)
-    pdos2.dos = - dos2.dos
+    pdos2.dos = - pdos2.dos
     return pdos1, pdos2
 end

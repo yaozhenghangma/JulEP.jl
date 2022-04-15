@@ -126,7 +126,7 @@ function Base.show(io::IO, cell::Cell)
         cell.symbols, "\n",
         cell.numbers)
     for atom in cell.atoms
-        println(atom)
+        println(io, atom)
     end
 end
 

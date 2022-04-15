@@ -19,4 +19,12 @@ end
         ions=[1], orbits=Array(1:9))
     @test dos.energy == Array(0:0.01:0.9)
     @test pdos.energy == Array(0:0.01:0.9)
+
+    bandsw = BandsWithSpin(bands, bands)
+    projectionw = ProjectionWithSpin(projection, projection)
+    dos1, dos2 = generate_dos(bandsw, kpoints; smear=smear_function, energy_number=91)
+    pdos1, pdos2 = generate_pdos(bandsw, kpoints, projectionw; smear=smear_function,
+        energy_number=91, ions=[1], orbits=Array(1:9))
+    @test dos1.energy == Array(0:0.01:0.9)
+    @test pdos1.energy == Array(0:0.01:0.9)
 end
