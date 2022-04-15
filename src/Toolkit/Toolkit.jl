@@ -19,4 +19,4 @@ include("smear.jl")
 export gaussian, lorentzian
 
 include("dos.jl")
-export generate_dos
+export generate_dos, generate_pdos

@@ -56,6 +56,7 @@ Base.getindex(bands::Bands, i) = bands.bands[i]
 Base.setindex!(bands::Bands, band::Band, i) = (bands.bands[i] = band)
 Base.iterate(bands::Bands, state=1) =
     state > length(bands.bands) ? nothing : (bands[state], state+1)
+Base.length(bands::Bands) = length(bands.bands)
 
 
 """

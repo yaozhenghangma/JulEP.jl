@@ -32,10 +32,14 @@ function generate_dos(bands::Bands, kpoints::Array{KPoint, 1};
     smear::Function=gaussian, energy_number::Integer=10000)
 
     dos = DOS()
-    dos.energy = Array(range(minimum(bands.energy), maximum(bands.energy), energy_number))
+    energy = hcat([band.energy for band in bands]...)
+    dos.energy = Array(range(minimum(energy), maximum(energy), energy_number))
     dos.dos = zeros(energy_number)
 
-    for i in 1:projection.number_kpoints, j in 1:projection.number_bands
+    number_kpoints = length(kpoints)
+    number_bands = length(bands)
+
+    for i in 1:number_kpoints, j in 1:number_bands
         dos.dos += smear.(dos.energy, bands[j].energy[i]) .* kpoints[i].weight
     end
 
@@ -82,8 +86,8 @@ Generate projected electronic density of states using bands and kpoints.
 - `projection::Projection`: metadata of projection
 - `smear::Function=gaussian`: smearing function, default: Gaussian smear
 - `energy_number::Integer=10000`: number of energy points, default 10000
-- `ions::Array{Integer, 1}=nothing`: index of ions which wavefunction is projected to
-- `orbits::Array{Integer, 1}=nothing`: index of orbitss which wavefunction is projected to
+- `ions::Array{<:Integer, 1}=nothing`: index of ions which wavefunction is projected to
+- `orbits::Array{<:Integer, 1}=nothing`: index of orbitss which wavefunction is projected to
 
 # Returns
 - `pdos::DOS`: metadata of projected dos
@@ -91,18 +95,19 @@ Generate projected electronic density of states using bands and kpoints.
 function generate_pdos(bands::Bands, kpoints::Array{KPoint, 1},
     projection::Projection;
     smear::Function=gaussian, energy_number::Integer=10000,
-    ions::Array{Integer, 1}=nothing, orbits::Array{Integer, 1}=nothing)
+    ions::Array{<:Integer, 1}=nothing, orbits::Array{<:Integer, 1}=nothing)
 
     pdos = DOS()
-    pdos.energy = Array(range(minimum(bands.energy), maximum(bands.energy), energy_number))
+    energy = hcat([band.energy for band in bands]...)
+    pdos.energy = Array(range(minimum(energy), maximum(energy), energy_number))
     pdos.dos = zeros(energy_number)
 
     select_projection = projection.projection_square[:, :, ions, orbits]
-    sum_select = dropdims(sum(select_projection, dims=[3, 4]), dims=[3, 4])
+    sum_select = dropdims(sum(select_projection, dims=(3, 4)), dims=(3, 4))
 
     for i in 1:projection.number_kpoints, j in 1:projection.number_bands
         pdos.dos +=
-            smear.(dos.energy, bands[j].energy[i]) .* kpoints[i].weight .* sum_select[i, j]
+            smear.(pdos.energy, bands[j].energy[i]) .* kpoints[i].weight .* sum_select[i, j]
     end
 
     return pdos
@@ -123,8 +128,8 @@ Generate projected electronic density of states using bands and kpoints.
 - `projection::ProjectionWithSpin`: metadata of projection
 - `smear::Function=gaussian`: smearing function, default: Gaussian smear
 - `energy_number::Integer=10000`: number of energy points, default 10000
-- `ions::Array{Integer, 1}=nothing`: index of ions which wavefunction is projected to
-- `orbits::Array{Integer, 1}=nothing`: index of orbitss which wavefunction is projected to
+- `ions::Array{<:Integer, 1}=nothing`: index of ions which wavefunction is projected to
+- `orbits::Array{<:Integer, 1}=nothing`: index of orbitss which wavefunction is projected to
 
 # Returns
 - `pdos1::DOS`: metadata of projected dos of spin up
@@ -133,7 +138,7 @@ Generate projected electronic density of states using bands and kpoints.
 function generate_pdos(bands::BandsWithSpin, kpoints::Array{KPoint, 1},
     projection::ProjectionWithSpin;
     smear::Function=gaussian, energy_number::Integer=10000,
-    ions::Array{Integer, 1}=nothing, orbits::Array{Integer, 1}=nothing)
+    ions::Array{<:Integer, 1}=nothing, orbits::Array{<:Integer, 1}=nothing)
 
     pdos1 = generate_dos(bands.bands_up, kpoints, projection.projection_up;
         smear=smear, energy_number=energy_number, ions=ions, orbits=orbits)
