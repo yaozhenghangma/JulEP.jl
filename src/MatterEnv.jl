@@ -20,7 +20,7 @@ using Plots
 
 include("MatterBase/MatterBase.jl")
 include("VASP/VASP.jl")
-include("Tools/Tools.jl")
+include("Toolkit/Toolkit.jl")
 include("Visualization/Visualization.jl")
 
 end

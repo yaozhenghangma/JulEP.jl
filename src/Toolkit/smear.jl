@@ -16,20 +16,20 @@
 @doc raw"""
     gaussian(x::Real, x₀::Real; σ::Real = 0.05)
 
-Gaussian function: ``g(x, x_0; \sigma)=\frac{1}{\sigma \sqrt{2 \pi}} \exp \left(-\frac{1}{2}
-    \frac{(x-x_0)^{2}}{\sigma^{2}}\right)``.
+PDF of Gaussian distribution: ``g(x, x_0; \sigma)=\frac{1}{\sigma \sqrt{2 \pi}}
+    \exp \left(-\frac{1}{2}\frac{(x-x_0)^{2}}{\sigma^{2}}\right)``.
 """
 function gaussian(x::Real, x₀::Real; σ::Real = 0.05)
-    return 1.0/sqrt(2π * σ) * exp(-(x-x₀)^2 / (2σ^2))
+    return 1.0/sqrt(2π)/σ * exp(-(x-x₀)^2 / (2σ^2))
 end
 
 
 @doc raw"""
     lorentzian(x::Real, x₀::Real; γ::Real = 0.03)
 
-Lorentzian function: ``f\left(x, x_{0}; \gamma\right) =\frac{1}{\pi \gamma}
+PDF of Cauchy-Lorentz distribution: ``f\left(x, x_{0}; \gamma\right) =\frac{1}{\pi \gamma}
     \left[\frac{\gamma^{2}}{\left(x-x_{0}\right)^{2}+\gamma^{2}}\right]``
 """
 function lorentzian(x::Real, x₀::Real; γ::Real = 0.03)
-    return γ / π / ((x-x₀)^2 - γ^2)
+    return γ / π / ((x-x₀)^2 + γ^2)
 end
