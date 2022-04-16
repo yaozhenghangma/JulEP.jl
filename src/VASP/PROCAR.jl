@@ -13,10 +13,21 @@
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-function read_weight!(input, projection, kpoints, bands, phase, noncolinear)
+function read_weight!(input, projection, kpoints, bands, phase, noncollinear)
+    pattern = r"[0-9]-[0-9]"
     for i in 1:projection.number_kpoints
         readline(input)     #blank line
-        split_line = split(strip(readline(input)))      #kpoint: coordinate and weight
+        line = readline(input) #kpoint: coordinate and weight
+        #lacking whitespace for negative k points coordiantes in procar
+        while true
+            m = match(pattern, line)
+            if m == nothing
+                break
+            else
+                line = line[1:m.offset] * " " * line[m.offset+1:end]
+            end
+        end
+        split_line = split(strip(line))
         kpoints[i].coordinate[1] = parse(Float64, split_line[4])
         kpoints[i].coordinate[2] = parse(Float64, split_line[5])
         kpoints[i].coordinate[3] = parse(Float64, split_line[6])
@@ -33,10 +44,61 @@ function read_weight!(input, projection, kpoints, bands, phase, noncolinear)
                 projection.projection_square[i, j, k, 1:9] = split_line[2:10]
             end
             readline(input)     #sum of projection over ions
-            if noncolinear
+            if noncollinear
                 for _ in 1:3, _ in 1:projection.number_ions+1
                     readline(input)     #projection on x, y or z spin direction (neglected)
                 end
+            end
+            if phase
+                readline(input)     #orbit
+                for k in 1:projection.number_ions
+                    split_line = parse.(Float64, split(strip(readline(input))))  #projection
+                    for l in 1:9
+                        projection.projection[i, j, k, l] =
+                            complex(split_line[2*l], split_line[2*l+1])
+                    end
+                end
+                readline(input)     #sum over ions
+            end
+            readline(input)     #blank line
+        end
+    end
+    return nothing
+end
+
+function read_weight_noncol!(input, projection, kpoints, bands, phase)
+    # todo: distinguish major spin and minor spin for noncollinear calculation
+    up = true
+    for i in 1:projection.projection_up.number_kpoints
+        readline(input)     #blank line
+        split_line = split(strip(readline(input)))      #kpoint: coordinate and weight
+        kpoints[i].coordinate[1] = parse(Float64, split_line[4])
+        kpoints[i].coordinate[2] = parse(Float64, split_line[5])
+        kpoints[i].coordinate[3] = parse(Float64, split_line[6])
+        kpoints[i].weight = parse(Float64, split_line[9])
+        readline(input)     #blank line
+        for j in 1:projection.projection_up.number_bands
+            split_line = split(strip(readline(input)))     #band
+            bands[j].energy[i] = parse(Float64, split_line[5])
+            bands[j].occupancy = parse(Float64, split_line[8])
+            readline(input)     #blank line
+            readline(input)     #orbit
+            for k in 1:projection.number_ions
+                split_line = parse.(Float64, split(strip(readline(input))))     #projection
+                projection.projection_square[i, j, k, 1:9] = split_line[2:10]
+            end
+            readline(input)     #sum of projection over ions
+            #projection on x, y or z spin direction (used to judge up or down)
+            for _ in 1:3, _ in 1:projection.number_ions+1
+                total = parse(Float64, split(strip(readline(input)))[end])
+                up = total >= 0 ? true : false
+            end
+            if up
+                projection.projection_down.projection_square[i, j, :, :] .= 0
+            else
+                projection.projection_down.projection_square[i, j, :, :] =
+                    projection.projection_up.projection_square[i, j, :, :]
+                projection.projection_up.projection_square[i, j, :, :] .= 0
             end
             if phase
                 readline(input)     #orbit
@@ -79,7 +141,7 @@ end
 
 
 """
-    load_procar(filename::String="PROCAR"; spin::Bool=false, noncolinear::Bool=false) \
+    load_procar(filename::String="PROCAR"; spin::Bool=false, noncollinear::Bool=false) \
     -> Projection, KPoints, Bands
 
 Load projection of wave function ⟨Yₗₘ|ϕₙₖ⟩ from PROCAR file.
@@ -87,14 +149,14 @@ Load projection of wave function ⟨Yₗₘ|ϕₙₖ⟩ from PROCAR file.
 # Arguments
 - `filename::String="PROCAR"`: name of input file
 - `spin::Bool=false`: ISPIN = 0(false) or 1(true)
-- `noncolinear::Bool=false`: INONCOLINEAR = 0(false) or 1(true)
+- `noncollinear::Bool=false`: Inoncollinear = 0(false) or 1(true)
 
 # Returns
 - `Projection`: Projection of wave function ⟨Yₗₘ|ϕₙₖ⟩
 - `Array{KPoint, 1}`: metadata of k-points
 - `Bands`: metadata of all bands
 """
-function load_procar(filename::String="PROCAR"; spin::Bool=false, noncolinear::Bool=false)
+function load_procar(filename::String="PROCAR"; spin::Bool=false, noncollinear::Bool=false)
     input = open(filename, "r");
 
     phase = false
@@ -108,22 +170,31 @@ function load_procar(filename::String="PROCAR"; spin::Bool=false, noncolinear::B
 
     kpoints = Array{KPoint, 1}([])
     if spin
-        projection = ProjectionWithSpin()
-        allocate_space!(input, projection.projection_up, phase)
-        bands = BandsWithSpin(projection.projection_up.number_bands,
-            projection.projection_up.number_kpoints)
-        kpoints = [KPoint() for i in 1:projection.projection_up.number_kpoints]
-        read_weight!(input, projection.projection_up, kpoints, bands.bands_up,
-            phase, false)
-        allocate_space!(input, projection.projection_down, phase)
-        read_weight!(input, projection.projection_down, kpoints, bands.bands_down,
-            phase, false)
+        if noncollinear
+            projection = ProjectionWithSpin()
+            allocate_space!(input, projection.projection_up, phase)
+            projection.projection_down = deepcopy(projection.projection_up)
+            bands = BandsWithSpin(projection.projection_up.number_bands,
+                projection.projection_up.number_kpoints)
+            kpoints = [KPoint() for i in 1:projection.projection_up.number_kpoints]
+        else
+            projection = ProjectionWithSpin()
+            allocate_space!(input, projection.projection_up, phase)
+            bands = BandsWithSpin(projection.projection_up.number_bands,
+                projection.projection_up.number_kpoints)
+            kpoints = [KPoint() for i in 1:projection.projection_up.number_kpoints]
+            read_weight!(input, projection.projection_up, kpoints, bands.bands_up,
+                phase, noncollinear)
+            allocate_space!(input, projection.projection_down, phase)
+            read_weight!(input, projection.projection_down, kpoints, bands.bands_down,
+                phase, noncollinear)
+        end
     else
         projection = Projection()
         allocate_space!(input, projection, phase)
         bands = Bands(projection.number_bands, projection.number_kpoints)
         kpoints = [KPoint() for i in 1:projection.number_kpoints]
-        read_weight!(input, projection, kpoints, bands, phase, noncolinear)
+        read_weight!(input, projection, kpoints, bands, phase, noncollinear)
     end
 
     close(input)
