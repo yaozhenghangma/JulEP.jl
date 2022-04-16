@@ -18,8 +18,8 @@
         projection::Projection,
         kpoints::Array{KPoint, 1},
         bands::Bands;
-        ion::Int = nothing,
-        orbit::Int = nothing,
+        ion::Integer = nothing,
+        orbit::Integer = nothing,
         color::Symbol = :red,
         magnify::Real = 10,
         tolerance::Real = 0)
@@ -30,9 +30,10 @@ Plot projections on current figure.
 - `projection::Projection`: metadata of projection
 - `kpoints::Array{KPoint, 1}`: metadata of all k-points
 - `bands::Bands`: metadat of all bands
-- `ion::Int = nothing`: projection of given ion
-- `orbit::Int = nothing`: projection of given orbit
+- `ion::Integer = nothing`: projection of given ion
+- `orbit::Integer = nothing`: projection of given orbit
 - `color::Symbol = :red`: marker color
+- `alpha::Real = 0.5`: alpha value of marker
 - `magnify::Real = 10`: marker_size = magnify * projection_square
 - `tolerance::Real = 0`: plot point if projection_square > tolerance
 """
@@ -40,9 +41,10 @@ function plot_projection!(
     projection::Projection,
     kpoints::Array{KPoint, 1},
     bands::Bands;
-    ion::Int = nothing,
-    orbit::Int = nothing,
+    ion::Integer = nothing,
+    orbit::Integer = nothing,
     color::Symbol = :red,
+    alpha::Real = 0.5;
     magnify::Real = 10,
     max_size::Real = 5,
     tolerance::Real = 0)
@@ -56,6 +58,7 @@ function plot_projection!(
                 seriestype = :scatter,
                 markercolor = color,
                 markersize = marker_size,
+                markeralpha = alpha;
                 markerstrokealpha = 0,
                 markerstrokecolor = color)
         end
@@ -69,8 +72,8 @@ end
         projection::ProjectionWithSpin,
         kpoints::Array{KPoint, 1},
         bands::BandsWithSpin;
-        ion::Int = nothing,
-        orbit::Int = nothing,
+        ion::Integer = nothing,
+        orbit::Integer = nothing,
         color::Symbol = :red,
         magnify::Real = 10,
         tolerance::Real = 0
@@ -81,9 +84,10 @@ Plot projections on current figure.
 - `projection::ProjectionWithSpin`: metadata of projection
 - `kpoints::Array{KPoint, 1}`: metadata of all k-points
 - `bands::BandsWithSpin`: metadat of all bands
-- `ion::Int = nothing`: projection of given ion
-- `orbit::Int = nothing`: projection of given orbit
+- `ion::Integer = nothing`: projection of given ion
+- `orbit::Integer = nothing`: projection of given orbit
 - `color::Symbol = :red`: marker color
+- `alpha::Real = 0.5`: alpha value of marker
 - `magnify::Real = 10`: marker_size = magnify * projection_square
 - `tolerance::Real = 0`: plot point if projection_square > tolerance
 """
@@ -91,17 +95,18 @@ function plot_projection!(
     projection::ProjectionWithSpin,
     kpoints::Array{KPoint, 1},
     bands::BandsWithSpin;
-    ion::Int = nothing,
-    orbit::Int = nothing,
+    ion::Integer = nothing,
+    orbit::Integer = nothing,
+    alpha::Real = 0.5;
     color::Symbol = :red,
     magnify::Real = 10,
     max_size::Real = 5,
     tolerance::Real = 0)
     plot_projection!(projection.projection_up, kpoints, bands.bands_up;
-        ion = ion, orbit = orbit, color = color,
+        ion = ion, orbit = orbit, color = color, alpha = alpha,
         magnify = magnify, max_size = max_size, tolerance = tolerance)
     plot_projection!(projection.projection_down, kpoints, bands.bands_down;
-        ion = ion, orbit = orbit, color = color,
+        ion = ion, orbit = orbit, color = color, alpha = alpha,
         magnify = magnify, max_size = max_size, tolerance = tolerance)
     return nothing
 end
