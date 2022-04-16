@@ -8,8 +8,15 @@
 ![License](https://img.shields.io/github/license/yaozhenghangma/MatterEnv.jl)
 [![Coverage](https://codecov.io/gh/YaozhenghangMa/MatterEnv.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/YaozhenghangMa/MatterEnv.jl)
 
-MatterEnv is an atomic environment package embedded in [Julia](https://julialang.org/).
+MatterEnv is an atomic environment package embedded in [Julia](https://julialang.org/). It defines basic type to describe atomic environment and provides
+postprocessing tools for DFT calculation.
 
 ```julia
 import Pkg; Pkg.add("MatterEnv")
 ```
+
+## Features
+
+- Plot band structure and projected band structure
+- Generate and plot electronic density of states (DOS) and projected DOS
+- VASP file I/O

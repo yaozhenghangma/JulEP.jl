@@ -19,6 +19,7 @@ makedocs(;
         "Home" => "index.md",
         "API Reference" => [
             "reference/MatterBase.md",
+            "reference/Toolkit.md",
             "reference/Visualization.md",
             "reference/VASP.md",
         ],

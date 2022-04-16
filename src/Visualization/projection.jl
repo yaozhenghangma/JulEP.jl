@@ -44,7 +44,7 @@ function plot_projection!(
     ion::Integer = nothing,
     orbit::Integer = nothing,
     color::Symbol = :red,
-    alpha::Real = 0.5;
+    alpha::Real = 0.5,
     magnify::Real = 10,
     max_size::Real = 5,
     tolerance::Real = 0)
@@ -97,7 +97,7 @@ function plot_projection!(
     bands::BandsWithSpin;
     ion::Integer = nothing,
     orbit::Integer = nothing,
-    alpha::Real = 0.5;
+    alpha::Real = 0.5,
     color::Symbol = :red,
     magnify::Real = 10,
     max_size::Real = 5,

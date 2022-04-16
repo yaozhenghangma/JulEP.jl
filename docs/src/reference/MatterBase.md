@@ -22,6 +22,12 @@ Bands
 BandsWithSpin
 ```
 
+## DOS
+
+```@docs
+DOS
+```
+
 ## Projection
 
 ```@docs
