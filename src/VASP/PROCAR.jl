@@ -64,8 +64,18 @@ end
 function read_weight_noncollinear!(input,
     projection_all, projection_x, projection_y, projection_z,
     kpoints, bands, phase)
+    pattern = r"[0-9]-[0-9]"
     for i in 1:projection_all.number_kpoints
         readline(input)     #blank line
+        #lacking whitespace for negative k points coordiantes in procar
+        while true
+            m = match(pattern, line)
+            if m == nothing
+                break
+            else
+                line = line[1:m.offset] * " " * line[m.offset+1:end]
+            end
+        end
         split_line = split(strip(readline(input)))      #kpoint: coordinate and weight
         kpoints[i].coordinate[1] = parse(Float64, split_line[4])
         kpoints[i].coordinate[2] = parse(Float64, split_line[5])
@@ -148,7 +158,8 @@ Load projection of wave function ⟨Yₗₘ|ϕₙₖ⟩ from PROCAR file.
 # Arguments
 - `filename::String="PROCAR"`: name of input file
 - `spin::Bool=false`: ISPIN = 0(false) or 1(true)
-- `noncollinear::Bool=false`: Inoncollinear = 0(false) or 1(true)
+- `noncollinear::Bool=false`: LNONCOLINEAR = 0(false) or 1(true). For noncolinear=1, value \
+of spin is neglected.
 
 # Returns for collinear
 - `Projection`: Projection of wave function ⟨Yₗₘ|ϕₙₖ⟩
