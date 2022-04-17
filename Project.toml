@@ -1,7 +1,7 @@
 name = "MatterEnv"
 uuid = "9a24efd3-56f5-4b6c-a4cc-8c3068a60637"
 authors = ["Yaozhenghang Ma <yaozhenghang.ma@gmail.com> and contributors"]
-version = "0.1.4"
+version = "0.1.5"
 
 [deps]
 Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
