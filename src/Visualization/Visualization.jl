@@ -14,11 +14,8 @@
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 include("kpoint.jl")
-
 include("band.jl")
-export plot_band!, plot_bands!
-
 include("dos.jl")
-
 include("projection.jl")
-export plot_projection!
+
+export plot!

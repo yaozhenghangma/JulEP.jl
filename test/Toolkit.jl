@@ -33,9 +33,42 @@ end
     projection_all = Projection()
     projection_all.projection_square[1,1,1,1] = 0.5
     projection_z = Projection()
-    projection_z.projection_square[1,1,1,1] = - 0.2
+    projection_z.projection_square[1,1,1,1] = -0.2
     sign_matrix = get_projection_sign(projection_z)
     new_projection_all = apply_projection_sign(projection_all, sign_matrix)
+    bands = Bands(1,1)
+    projection, bands = distinguish_spin(projection_all, projection_z, bands)
     @test sign_matrix[1,1,1,1] == -1
     @test new_projection_all.projection_square[1,1,1,1] == -0.5
+    @test projection.projection_up.projection_square[1,1,1,1] == 0
+    @test projection.projection_down.projection_square[1,1,1,1] == 0.5
+end
+
+@testset "orbit.jl" begin
+    projection = ProjectionWithSpin()
+    projection.projection_up.projection = complex(ones(1, 1, 1, 9))
+    projection.projection_down.projection = complex(ones(1, 1, 1, 9))
+    transfer_matrix = [
+        1   1   0   0   0
+        1   1   0   0   0
+        0   0   1   0   0
+        0   0   0   1   0
+        0   0   0   1   1
+    ]
+    projection_transformation!(projection, transfer_matrix)
+    @test projection.projection_up.projection_square[1, 1, 1, 5] == 4
+    @test projection.projection_up.projection_square[1, 1, 1, 6] == 4
+    @test projection.projection_up.projection_square[1, 1, 1, 7] == 1
+    @test projection.projection_up.projection_square[1, 1, 1, 8] == 1
+    @test projection.projection_up.projection_square[1, 1, 1, 9] == 4
+end
+
+@testset "band.jl" begin
+    bands = BandsWithSpin(10, 10)
+    shift_energy!(bands, 1)
+    shift_energy!(bands.bands_up, 1)
+    shift_energy!(bands.bands_up[1], 1)
+    @test bands.bands_up[1].energy[1] == 3
+    @test bands.bands_up[2].energy[1] == 2
+    @test bands.bands_down[1].energy[1] == 1
 end

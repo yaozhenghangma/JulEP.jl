@@ -14,10 +14,10 @@
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 """
-    plot_band!(band::Band,
+    plot!(band::Band,
         kpoints::Array{KPoint, 1},
         xticks::Array{String, 1} = nothing;
-        line_style = (:solid, :black))
+        line = (:solid, :black))
 
 Plot one band on current figure.
 
@@ -25,19 +25,19 @@ Plot one band on current figure.
 - `band::Band`: metadata of band
 - `kpoints::Array{KPoint, 1}`: metadata of k-points
 - `xticks::Array{String, 1}`: name of critical points showed at x axis
-- `line_style = (:solid, :black)`: style of line (see document of Plots.jl)
+- `line = (:solid, :black)`: style of line (see document of Plots.jl)
 """
-function plot_band!(band::Band,
+function plot!(band::Band,
     kpoints::Array{KPoint, 1},
     xticks::Array{String, 1} = nothing;
-    line_style = (:solid, :black))
+    line = (:solid, :black))
 
     index, number = index_kpoints(kpoints)
     ticks_range = 1:(float(number-1)/(length(xticks)-1)):number
 
     plot!(index, band.energy,
         label = nothing,
-        line = line_style,
+        line = line,
         xticks = (ticks_range, xticks),
         xlims = (1, number))
     return nothing
@@ -45,10 +45,10 @@ end
 
 
 """
-    plot_bands!(bands::Bands,
+    plot!(bands::Bands,
         kpoints::Array{KPoint, 1},
         xticks::Array{String, 1} = nothing;
-        line_style = (:solid, :black))
+        line = (:solid, :black))
 
 Plot all bands on current figure.
 
@@ -56,16 +56,16 @@ Plot all bands on current figure.
 - `bands::Bands`: metadata of all bands
 - `kpoints::Array{KPoint, 1}`: metadata of k-points
 - `xticks::Array{String, 1}=nothing`: name of critical points showed at x axis
-- `line_style = (:solid, :black)`: style of line (see document of Plots.jl)
+- `line = (:solid, :black)`: style of line (see document of Plots.jl)
 """
-function plot_bands!(bands::Bands,
+function plot!(bands::Bands,
     kpoints::Array{KPoint, 1},
     xticks::Array{String, 1} = nothing;
-    line_style = (:solid, :black))
+    line = (:solid, :black))
 
     #plot every band
     for band in bands
-        plot_band!(band, kpoints, xticks; line_style=line_style)
+        plot!(band, kpoints, xticks; line=line)
     end
 
     #add dash line at Fermi energy
@@ -77,10 +77,10 @@ end
 
 
 """
-    plot_bands!(bands::BandsWithSpin,
+    plot!(bands::BandsWithSpin,
         kpoints::Array{KPoint, 1},
         xticks::Array{String, 1} = nothing;
-        line_style = (:solid, :black))
+        line = (:solid, :black))
 
 Plot all bands on current figure.
 
@@ -88,20 +88,20 @@ Plot all bands on current figure.
 - `bands::BandsWithSpin`: metadata of all bands (spin up and spin down)
 - `kpoints::Array{KPoint, 1}`: metadata of k-points
 - `xticks::Array{String, 1}=nothing`: name of critical points showed at x axis
-- `line_style = [(:solid, :black),(:dash, :gray)]`: style of line (see document of Plots.jl)
+- `line = [(:solid, :black),(:dash, :gray)]`: style of line (see document of Plots.jl)
 """
-function plot_bands!(bands::BandsWithSpin,
+function plot!(bands::BandsWithSpin,
     kpoints::Array{KPoint, 1},
     xticks::Array{String, 1} = nothing;
-    line_style = [(:solid, :black), (:dash, :gray)])
+    line = [(:solid, :black), (:dash, :gray)])
 
     #plot every band
     for band in bands.bands_up
-        plot_band!(band, kpoints, xticks; line_style=line_style[1])
+        plot!(band, kpoints, xticks; line=line[1])
     end
 
     for band in bands.bands_down
-        plot_band!(band, kpoints, xticks; line_style=line_style[2])
+        plot!(band, kpoints, xticks; line=line[2])
     end
 
     #add dash line at Fermi energy

@@ -13,3 +13,18 @@ lorentzian
 generate_dos
 generate_pdos
 ```
+
+## Energy Shift
+```@docs
+shift_energy!
+```
+
+## Orbit
+```@docs
+projection_transformation!
+```
+
+## Projection
+```@docs
+distinguish_spin
+```

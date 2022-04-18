@@ -14,7 +14,7 @@
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 """
-    plot_projection!(
+    plot!(
         projection::Projection,
         kpoints::Array{KPoint, 1},
         bands::Bands;
@@ -37,7 +37,7 @@ Plot projections on current figure.
 - `magnify::Real = 10`: marker_size = magnify * projection_square
 - `tolerance::Real = 0`: plot point if projection_square > tolerance
 """
-function plot_projection!(
+function plot!(
     projection::Projection,
     kpoints::Array{KPoint, 1},
     bands::Bands;
@@ -68,7 +68,7 @@ end
 
 
 """
-    plot_projection!(
+    plot!(
         projection::ProjectionWithSpin,
         kpoints::Array{KPoint, 1},
         bands::BandsWithSpin;
@@ -91,7 +91,7 @@ Plot projections on current figure.
 - `magnify::Real = 10`: marker_size = magnify * projection_square
 - `tolerance::Real = 0`: plot point if projection_square > tolerance
 """
-function plot_projection!(
+function plot!(
     projection::ProjectionWithSpin,
     kpoints::Array{KPoint, 1},
     bands::BandsWithSpin;
@@ -102,10 +102,10 @@ function plot_projection!(
     magnify::Real = 10,
     max_size::Real = 5,
     tolerance::Real = 0)
-    plot_projection!(projection.projection_up, kpoints, bands.bands_up;
+    plot!(projection.projection_up, kpoints, bands.bands_up;
         ion = ion, orbit = orbit, color = color, alpha = alpha,
         magnify = magnify, max_size = max_size, tolerance = tolerance)
-    plot_projection!(projection.projection_down, kpoints, bands.bands_down;
+    plot!(projection.projection_down, kpoints, bands.bands_down;
         ion = ion, orbit = orbit, color = color, alpha = alpha,
         magnify = magnify, max_size = max_size, tolerance = tolerance)
     return nothing

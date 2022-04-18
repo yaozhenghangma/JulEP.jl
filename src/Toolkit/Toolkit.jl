@@ -14,6 +14,7 @@
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 include("orbit.jl")
+export projection_transformation!
 
 include("smear.jl")
 export gaussian, lorentzian
@@ -22,4 +23,7 @@ include("dos.jl")
 export generate_dos, generate_pdos
 
 include("projection.jl")
-export get_projection_sign, apply_projection_sign
+export get_projection_sign, apply_projection_sign, distinguish_spin
+
+include("band.jl")
+export shift_energy!

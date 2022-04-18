@@ -67,7 +67,6 @@ function generate_dos(bands::BandsWithSpin, kpoints::Array{KPoint, 1};
     smear::Function=gaussian, energy_number::Integer=10000)
     dos1 = generate_dos(bands.bands_up, kpoints; smear=smear, energy_number=energy_number)
     dos2 = generate_dos(bands.bands_down, kpoints; smear=smear, energy_number=energy_number)
-    dos2.dos = - dos2.dos
     return dos1, dos2
 end
 
@@ -144,6 +143,5 @@ function generate_pdos(bands::BandsWithSpin, kpoints::Array{KPoint, 1},
         smear=smear, energy_number=energy_number, ions=ions, orbits=orbits)
     pdos2 = generate_pdos(bands.bands_down, kpoints, projection.projection_down;
         smear=smear, energy_number=energy_number, ions=ions, orbits=orbits)
-    pdos2.dos = - pdos2.dos
     return pdos1, pdos2
 end
