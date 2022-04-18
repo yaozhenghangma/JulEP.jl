@@ -12,3 +12,57 @@
 #
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+
+@doc raw"""
+    projection_transformation!(projection::Projection,
+        transfer_matrix::Matrix{<:Number}...;
+        orbit::Symbol=:d)
+
+Linear transformation of projection ⟨Yₗₘ|ϕₙₖ⟩.
+
+# Arguments
+- `projection::Projection`: projection of wavefunction
+- `transfer_matrix::Matrix{<:Number}...`: transformation matrix M1, M2 ...
+- `orbit::Symbol=:d`: orbits to be considered in transformation, default d orbits
+"""
+function projection_transformation!(projection::Projection,
+    transfer_matrix::Matrix{<:Number}...;
+    orbit::Symbol=:d)
+
+    if orbit == :d
+        for matrix in transfer_matrix
+            for i in 1:projection.number_kpoints,
+                j in 1:projection.number_bands,
+                k in 1:projection.number_ions
+                projection.projection[i, j, k, 5:9] =
+                    matrix * projection.projection[i, j, k, 5:9]
+            end
+        end
+    end
+
+    projection.projection_square = abs2.(projection.projection)
+    return nothing
+end
+
+
+@doc raw"""
+    projection_transformation!(projection::ProjectionWithSpin,
+        transfer_matrix::Matrix{<:Number}...;
+        orbit::Symbol=:d)
+
+Linear transformation of projection ⟨Yₗₘ|ϕₙₖ⟩.
+
+# Arguments
+- `projection::ProjectionWithSpin`: projection of wavefunction
+- `transfer_matrix::Matrix{<:Number}...`: transformation matrix M1, M2 ...
+- `orbit::Symbol=:d`: orbits to be considered in transformation, default d orbits
+"""
+function projection_transformation!(projection::ProjectionWithSpin,
+    transfer_matrix::Matrix{<:Number}...;
+    orbit::Symbol=:d)
+
+    projection_transformation!(projection.projection_up, transfer_matrix...; orbit=orbit)
+    projection_transformation!(projection.projection_down, transfer_matrix...; orbit=orbit)
+    return nothing
+end
