@@ -18,5 +18,7 @@ include("kpoint.jl")
 include("band.jl")
 export plot_band!, plot_bands!
 
+include("dos.jl")
+
 include("projection.jl")
 export plot_projection!

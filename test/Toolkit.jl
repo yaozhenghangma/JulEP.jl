@@ -28,3 +28,14 @@ end
     @test dos1.energy == Array(0:0.01:0.9)
     @test pdos1.energy == Array(0:0.01:0.9)
 end
+
+@testset "projection.jl" begin
+    projection_all = Projection()
+    projection_all.projection_square[1,1,1,1] = 0.5
+    projection_z = Projection()
+    projection_z.projection_square[1,1,1,1] = - 0.2
+    sign_matrix = get_projection_sign(projection_z)
+    new_projection_all = apply_projection_sign(projection_all, sign_matrix)
+    @test sign_matrix[1,1,1,1] == -1
+    @test new_projection_all.projection_square[1,1,1,1] == -0.5
+end
