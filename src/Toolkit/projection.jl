@@ -46,3 +46,36 @@ function apply_projection_sign(projection::Projection, sign_matrix::Array{<:Real
     new_projection.projection_square = new_projection.projection_square .* sign_matrix
     return new_projection
 end
+
+
+@doc raw"""
+    distinguish_spin(projection_all::Projection,
+        projection_axis::Projection,
+        bands::Bands)
+
+Distinguish projection of spin up and spin down. (Used in projection loaded from PROCAR)
+
+# Arguments
+- `projection_all::Projection`: total projected magnetization
+- `projection_axis::Projection`: projected magnetization in x, y or z axis
+- `bands::Bands`: metadata of bands
+
+# Returnss
+- `ProjectionWithSpin`: projection of spin up and spin down
+- `BandsWithSpin`: metadata of bands of spin up and spin down
+"""
+function distinguish_spin(projection_all::Projection,
+    projection_axis::Projection,
+    bands::Bands)
+    sign_matrix = get_projection_sign(projection_axis)
+    projection_axis_new = apply_projection_sign(projection_all, sign_matrix)
+    projection_up = deepcopy(projection_all)
+    projection_down = deepcopy(projection_all)
+    @. projection_up.projection_square =
+        (projection_all.projection_square + projection_axis_new.projection_square)/2
+    @. projection_down.projection_square =
+        (projection_all.projection_square - projection_axis_new.projection_square)/2
+    projection = ProjectionWithSpin(projection_up, projection_down)
+    bands_new = BandsWithSpin(bands, bands)
+    return projection, bands_new
+end
