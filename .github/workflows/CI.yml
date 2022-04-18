@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-    tags: '*'
+      - main
   pull_request:
   release:
     types: [published]
