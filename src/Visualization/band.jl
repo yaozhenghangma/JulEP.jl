@@ -97,16 +97,16 @@ function plot!(bands::BandsWithSpin,
 
     #plot every band
     for band in bands.bands_up
-        plot!(band, kpoints, xticks; line=line[1])
+        Plots.plot!(band, kpoints, xticks; line=line[1])
     end
 
     for band in bands.bands_down
-        plot!(band, kpoints, xticks; line=line[2])
+        Plots.plot!(band, kpoints, xticks; line=line[2])
     end
 
     #add dash line at Fermi energy
     x = Array{Int, 1}(1:length(kpoints))
     y = zeros(length(kpoints))
-    plot!(x, y, label=nothing, line=(:dot, :gray))
+    Plots.plot!(x, y, label=nothing, line=(:dot, :gray))
     return nothing
 end

@@ -54,7 +54,7 @@ function plot!(
         if projection.projection_square[j, i, ion, orbit] > tolerance
             marker_size = magnify*projection.projection_square[j, i, ion, orbit]
             marker_size = (marker_size > max_size) ? max_size : marker_size
-            plot!([index[j]], [bands[i].energy[j]],
+            Plots.plot!([index[j]], [bands[i].energy[j]],
                 seriestype = :scatter,
                 markercolor = color,
                 markersize = marker_size,
