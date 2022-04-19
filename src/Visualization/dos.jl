@@ -27,7 +27,7 @@ Plot dos on current figure.
 """
 function plot!(dos::DOS; line=(:blue), shift::Real=0, max::Real=1)
     tmp_dos = deepcopy(dos)
-    for i in 1:length(tmp_dos)
+    for i in 1:length(tmp_dos.dos)
         if tmp_dos.dos[i] > max
             tmp_dos.dos[i] = max + shift
         else
