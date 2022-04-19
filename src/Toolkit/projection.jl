@@ -25,7 +25,11 @@ Applied sign function to squared projection
 - `Array{Float, 4}`: sign of each squared projection
 """
 function get_projection_sign(projection::Projection)
-    return sign.(projection.projection_square)
+    sign_matrix = deepcopy(projection.projection_square)
+    sign_matrix[:,:,:,1] = sign(sign_matrix[:,:,:,1])       #s orbit
+    sign_matrix[:,:,:,2:4] .= sign.(sum(sign_matrix[:,:,:,2:4], dims=4))        #p orbit
+    sign_matrix[:,:,:,5:9] .= sign.(sum(sign_matrix[:,:,:,5:9], dims=4))        #d orbit
+    return sign_matrix
 end
 
 
