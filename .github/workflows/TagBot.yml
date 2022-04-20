@@ -9,14 +9,19 @@ jobs:
     if: github.event_name == 'workflow_dispatch' || github.actor == 'JuliaTagBot'
     runs-on: ubuntu-latest
     steps:
+      - uses: JuliaRegistries/TagBot@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          ssh: ${{ secrets.DOCUMENTER_KEY }}
+          
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Get the version from the tag
+      - name: Get the version from the Project.toml
         id: tag_name
         run: |
-          version=`grep "version" Project.toml | awk -F '"' '{print $2}'`
-          echo ::set-output name=current_version::$version
+          version_1=`grep "version" Project.toml | awk -F '"' '{print $2}'`
+          echo ::set-output name=current_version_1::$version_1
         shell: bash
 
       - name: Get the changelog entry
@@ -25,18 +30,13 @@ jobs:
         uses: mindsers/changelog-reader-action@v2
         with:
           validation_depth: 1
-          version: ${{ steps.tag_name.outputs.current_version }}
+          version: ${{ steps.tag_name.outputs.current_version_1 }}
           path: ./CHANGELOG.md
-
-      - uses: JuliaRegistries/TagBot@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          ssh: ${{ secrets.DOCUMENTER_KEY }}
       
       - name: Create/update release
         uses: ncipollo/release-action@v1
         with:
-          tag: v${{ steps.changelog_reader.outputs.version }}
+          tag: v${{ steps.changelog_reader.outputs.version_1 }}
           body: ${{ steps.changelog_reader.outputs.changes }}
           prerelease: ${{ steps.changelog_reader.outputs.status == 'prereleased' }}
           draft: ${{ steps.changelog_reader.outputs.status == 'unreleased' }}
