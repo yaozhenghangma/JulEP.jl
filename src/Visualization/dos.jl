@@ -15,17 +15,16 @@
 
 
 @doc raw"""
-    plot!(dos::DOS; line=(:blue), shift::Real=0, max::Real=1)
+    dos_recipe(dos::DOS; shift = 0, max = 1)
 
-Plot dos on current figure.
+Plots recipe for dos.
 
 # Arguments
 - `dos::DOS`: metadata of dos
-- `line = (:blue)`: style of line (see document of Plots.jl)
-- `shift::Real=0`: shift of dos value, default 0
-- `max::Real=1`: maximum value of dos value, default 1
+- `shift=0`: shift of dos value, default 0
+- `max=1`: maximum value of dos value, default 1
 """
-function plot!(dos::DOS; line=(:blue), shift::Real=0, max::Real=1)
+RecipesBase.@recipe function dos_recipe(dos::DOS; shift = 0, max = 1)
     tmp_dos = deepcopy(dos)
     for i in 1:length(tmp_dos.dos)
         if tmp_dos.dos[i] > max
@@ -34,31 +33,9 @@ function plot!(dos::DOS; line=(:blue), shift::Real=0, max::Real=1)
             tmp_dos.dos[i] += shift
         end
     end
-    Plots.plot!(tmp_dos.energy, tmp_dos.dos, line=line)
-    Plots.plot!([tmp_dos.energy[1], tmp_dos.energy[end]],
-        [max+shift, max+shift],
-        line=(:black))
-    Plots.plot!([0, 0], [shift, shift+max], line=(:black, :dash))
-    return nothing
-end
+    println(shift)
 
-
-@doc raw"""
-    plot!(dos::DOS...; line=(:blue), shift::Real=0, max::Real=1)
-
-Plot dos on current figure.
-
-# Arguments
-- `dos::DOS...`: metadata of dos
-- `line = (:blue)`: style of line (see document of Plots.jl)
-- `shift::Real=0`: shift of dos value, default 0
-- `max::Real=1`: maximum value of dos value, default 1
-"""
-function plot!(dos::DOS...; line=(:blue), shift::Real=0, max::Real=1)
-    i = 0
-    for d in dos
-        plot!(d; line=line, shift=shift+i*max, max=max)
-        i += 1
-    end
-    return nothing
+    line --> :blue
+    label --> nothing
+    return tmp_dos.energy, tmp_dos.dos
 end

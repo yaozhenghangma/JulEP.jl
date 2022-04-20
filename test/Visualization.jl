@@ -21,6 +21,6 @@ end
 
 @testset "Visualization/dos.jl" begin
     dos = DOS(Array(-5:0.1:5), Array(0:0.01:1))
-    MatterEnv.plot!(dos, dos)
+    plot(dos, shfit= 3, max = 10)
     @test true
 end
