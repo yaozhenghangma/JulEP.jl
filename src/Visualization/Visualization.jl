@@ -17,5 +17,3 @@ include("kpoint.jl")
 include("band.jl")
 include("dos.jl")
 include("projection.jl")
-
-export plot!

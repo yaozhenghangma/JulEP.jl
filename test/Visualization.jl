@@ -15,7 +15,7 @@ end
     kpoints = [KPoint(0.5, [0, 0, 0]), KPoint(0.5, [1.0, 1.0, 1.0])]
     projection.projection_up.projection_square = ones(1,1,1,9)
     projection.projection_down.projection_square = zeros(1,1,1,9)
-    MatterEnv.plot!(projection, kpoints, bands; ion=1, orbit=7)
+    plot(projection, kpoints, bands, ion=1, orbit=7)
     @test true
 end
 
