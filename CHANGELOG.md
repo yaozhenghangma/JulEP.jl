@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0]
+### Added
+- Visualize DOS and pDOS
+- Tools for orbit transformation
+- Tools for separating spin up and spin down for PROCAR of LNONCOLLINEAR
+
 ## [0.1.5]
 ### Added
 - Load PROCAR for noncollinear calculation
@@ -40,6 +46,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - load and save POSCAR
 
 [Unreleased]: https://github.com/yaozhenghangma/MatterEnv/blob/main/CHANGELOG.md
+[0.2.0]: https://github.com/yaozhenghangma/MatterEnv.jl/tree/v0.2.0
 [0.1.5]: https://github.com/yaozhenghangma/MatterEnv.jl/tree/v0.1.5
 [0.1.4]: https://github.com/yaozhenghangma/MatterEnv.jl/tree/v0.1.4
 [0.1.3]: https://github.com/yaozhenghangma/MatterEnv.jl/tree/v0.1.3

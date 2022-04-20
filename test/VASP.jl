@@ -1,7 +1,7 @@
 using MatterEnv
 using Test
 
-@testset "EIGENVAL.jl" begin
+@testset "VASP/EIGENVAL.jl" begin
     string = """
     1    1    1
     0.4923943E+02  0.3372146E-09  0.3372146E-09  0.1499999E-08  0.5000000E-15
@@ -20,7 +20,7 @@ using Test
     @test bands.bands_up[1].energy[1] == -18.772517
 end
 
-@testset "POSCAR.jl" begin
+@testset "VASP/POSCAR.jl" begin
     lattice = Lattice([2.0 0.0 0.0; 0.0 2.0 0.0; 0.0 0.0 1.0])
     atom1 = Atom("H", [0.0; 0.0; 0.0])
     atom2 = Atom("H", [1.0; 1.0; 0.5])
@@ -38,7 +38,7 @@ end
     @test cell1 == cell2
 end
 
-@testset "PROCAR.jl" begin
+@testset "VASP/PROCAR.jl" begin
     string = """
     PROCAR lm decomposed + phase
     # of k-points:   1         # of bands:   1         # of ions:    3
@@ -66,7 +66,7 @@ end
     @test projection.projection[1, 1, 1, 1] == -0.037+0.235im
 end
 
-@testset "PROCAR.jl for noncollinear" begin
+@testset "VASP/PROCAR.jl for noncollinear" begin
     string = """
     PROCAR lm decomposed + phase
     # of k-points:   1         # of bands:   1         # of ions:    3
@@ -107,7 +107,7 @@ end
     @test py.projection_square[1, 1, 1, 1] == pz.projection_square[1, 1, 1, 1] == 0.059
 end
 
-@testset "PROOUT.jl" begin
+@testset "VASP/PROOUT.jl" begin
     string = """
     PROOUT
     # of k-points:  1         # of bands:   1         # of ions:    1

@@ -4,7 +4,6 @@
 
 [![Build Status](https://github.com/YaozhenghangMa/MatterEnv.jl/actions/workflows/CI.yml/badge.svg?branch=)](https://github.com/YaozhenghangMa/MatterEnv.jl/actions/workflows/CI.yml?query=branch%3A)
 [![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://YaozhenghangMa.github.io/MatterEnv.jl/stable)
-[![Common Changelog](https://common-changelog.org/badge.svg)](https://github.com/yaozhenghangma/MatterEnv.jl/blob/main/CHANGELOG.md)
 ![License](https://img.shields.io/github/license/yaozhenghangma/MatterEnv.jl)
 [![Coverage](https://codecov.io/gh/YaozhenghangMa/MatterEnv.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/YaozhenghangMa/MatterEnv.jl)
 

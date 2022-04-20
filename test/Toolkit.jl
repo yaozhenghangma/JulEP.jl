@@ -1,12 +1,12 @@
 using MatterEnv
 using Test
 
-@testset "smear.jl" begin
+@testset "Toolkit/smear.jl" begin
     @test 6.66448 <= gaussian(0.13, 0.1; σ=0.05) <= 6.66450
     @test 9.5492 <= lorentzian(0.11, 0.1; γ=0.03) <= 9.5494
 end
 
-@testset "dos.jl" begin
+@testset "Toolkit/dos.jl" begin
     bands = Bands(1, 10)
     bands[1].energy = Array(0:0.1:0.9)
     kpoints = [KPoint(0.1, zeros(3)) for _ in 1:10]
@@ -29,10 +29,12 @@ end
     @test pdos1.energy == Array(0:0.01:0.9)
 end
 
-@testset "projection.jl" begin
+@testset "Toolkit/projection.jl" begin
     projection_all = Projection()
+    projection_all.projection_square = ones(1,1,1,9)
     projection_all.projection_square[1,1,1,1] = 0.5
     projection_z = Projection()
+    projection_z.projection_square = ones(1,1,1,9)
     projection_z.projection_square[1,1,1,1] = -0.2
     sign_matrix = get_projection_sign(projection_z)
     new_projection_all = apply_projection_sign(projection_all, sign_matrix)
@@ -44,7 +46,7 @@ end
     @test projection.projection_down.projection_square[1,1,1,1] == 0.5
 end
 
-@testset "orbit.jl" begin
+@testset "Toolkit/orbit.jl" begin
     projection = ProjectionWithSpin()
     projection.projection_up.projection = complex(ones(1, 1, 1, 9))
     projection.projection_down.projection = complex(ones(1, 1, 1, 9))
@@ -63,7 +65,7 @@ end
     @test projection.projection_up.projection_square[1, 1, 1, 9] == 4
 end
 
-@testset "band.jl" begin
+@testset "Toolkit/band.jl" begin
     bands = BandsWithSpin(10, 10)
     shift_energy!(bands, 1)
     shift_energy!(bands.bands_up, 1)

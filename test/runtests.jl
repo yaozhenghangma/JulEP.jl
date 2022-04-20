@@ -5,4 +5,5 @@ using Test
     include("MatterBase.jl")
     include("VASP.jl")
     include("Toolkit.jl")
+    include("Visualization.jl")
 end
