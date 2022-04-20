@@ -13,100 +13,98 @@
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-"""
-    plot!(band::Band,
-        kpoints::Array{KPoint, 1},
-        xticks::Array{String, 1} = nothing;
-        line = (:solid, :black))
 
-Plot one band on current figure.
+"""
+    band_recipe(band::Band,
+        kpoints::Array{KPoint, 1};
+        critical_points = nothing)
+
+Plots recipe for band structure.
 
 # Arguments
 - `band::Band`: metadata of band
 - `kpoints::Array{KPoint, 1}`: metadata of k-points
-- `xticks::Array{String, 1}`: name of critical points showed at x axis
-- `line = (:solid, :black)`: style of line (see document of Plots.jl)
+- `critical_points = nothing`: name of critical points
+    showed at x axis
 """
-function plot!(band::Band,
-    kpoints::Array{KPoint, 1},
-    xticks::Array{String, 1} = nothing;
-    line = (:solid, :black))
+RecipesBase.@recipe function band_recipe(band::Band,
+    kpoints::Array{KPoint, 1};
+    critical_points = nothing)
 
     index, number = index_kpoints(kpoints)
-    ticks_range = 1:(float(number-1)/(length(xticks)-1)):number
+    ticks_range = 1:(float(number-1)/(length(critical_points)-1)):number
 
-    Plots.plot!(index, band.energy,
-        label = nothing,
-        line = line,
-        xticks = (ticks_range, xticks),
-        xlims = (1, number))
-    return nothing
+    line --> (:solid, :black)
+    label --> nothing
+    if critical_points !== nothing
+        xticks -->  (ticks_range, critical_points)
+    end
+    xlims --> (1, number)
+
+    return index, band.energy
 end
 
 
 """
-    plot!(bands::Bands,
-        kpoints::Array{KPoint, 1},
-        xticks::Array{String, 1} = nothing;
-        line = (:solid, :black))
+    bands_recipe(band::Bands,
+        kpoints::Array{KPoint, 1};
+        critical_points = nothing)
 
-Plot all bands on current figure.
+Plots recipe for band structure.
 
 # Arguments
-- `bands::Bands`: metadata of all bands
+- `bands::Bands`: metadata of band
 - `kpoints::Array{KPoint, 1}`: metadata of k-points
-- `xticks::Array{String, 1}=nothing`: name of critical points showed at x axis
-- `line = (:solid, :black)`: style of line (see document of Plots.jl)
+- `critical_points = nothing`: name of critical points
+    showed at x axis
 """
-function plot!(bands::Bands,
-    kpoints::Array{KPoint, 1},
-    xticks::Array{String, 1} = nothing;
-    line = (:solid, :black))
+RecipesBase.@recipe function bands_recipe(bands::Bands,
+    kpoints::Array{KPoint, 1};
+    critical_points = nothing)
 
     #plot every band
     for band in bands
-        plot!(band, kpoints, xticks; line=line)
+        @series begin
+            critical_points --> critical_points
+            return band, kpoints
+        end
     end
 
-    #add dash line at Fermi energy
-    x = Array{Int, 1}(1:length(kpoints))
-    y = zeros(length(kpoints))
-    Plots.plot!(x, y, label=nothing, line=(:dot, :gray))
     return nothing
 end
 
 
 """
-    plot!(bands::BandsWithSpin,
-        kpoints::Array{KPoint, 1},
-        xticks::Array{String, 1} = nothing;
-        line = (:solid, :black))
+    bands_recipe(band::BandsWithSpin,
+        kpoints::Array{KPoint, 1};
+        critical_points = nothing)
 
-Plot all bands on current figure.
+Plots recipe for band structure.
 
 # Arguments
-- `bands::BandsWithSpin`: metadata of all bands (spin up and spin down)
+- `bands::BandsWithSpin`: metadata of band
 - `kpoints::Array{KPoint, 1}`: metadata of k-points
-- `xticks::Array{String, 1}=nothing`: name of critical points showed at x axis
-- `line = [(:solid, :black),(:dash, :gray)]`: style of line (see document of Plots.jl)
+- `critical_points = nothing`: name of critical points
+    showed at x axis
+- `line_list = [(:solid, :black), (:dash, :gray)]`: Style of lines for spin up and spin down
+    default: black solid line for spin up and gray dash line for spin down
 """
-function plot!(bands::BandsWithSpin,
-    kpoints::Array{KPoint, 1},
-    xticks::Array{String, 1} = nothing;
-    line = [(:solid, :black), (:dash, :gray)])
+RecipesBase.@recipe function bands_recipe(bands::BandsWithSpin,
+    kpoints::Array{KPoint, 1};
+    critical_points = nothing,
+    line_list = [(:solid, :black), (:dash, :gray)])
 
-    #plot every band
-    for band in bands.bands_up
-        plot!(band, kpoints, xticks; line=line[1])
+    @series begin
+        critical_points --> critical_points
+        line --> line_list[1]
+        return bands.bands_up, kpoints
     end
 
-    for band in bands.bands_down
-        plot!(band, kpoints, xticks; line=line[2])
+    @series begin
+        critical_points --> critical_points
+        line --> line_list[2]
+        return bands.bands_down, kpoints
     end
 
-    #add dash line at Fermi energy
-    x = Array{Int, 1}(1:length(kpoints))
-    y = zeros(length(kpoints))
-    Plots.plot!(x, y, label=nothing, line=(:dot, :gray))
     return nothing
 end

@@ -17,6 +17,7 @@ module MatterEnv
 
 using Printf
 using Plots
+import RecipesBase
 
 include("MatterBase/MatterBase.jl")
 include("VASP/VASP.jl")

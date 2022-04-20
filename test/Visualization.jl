@@ -5,8 +5,7 @@ using Test
 @testset "Visualization/band.jl" begin
     bands = BandsWithSpin(2,2)
     kpoints = [KPoint(0.5, [0, 0, 0]), KPoint(0.5, [1.0, 1.0, 1.0])]
-    Plots.plot(title="test")
-    MatterEnv.plot!(bands, kpoints, ["Γ"])
+    plot(bands, kpoints; critical_points=["Γ"], label="test")
     @test true
 end
 
