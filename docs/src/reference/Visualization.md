@@ -1,5 +1,19 @@
 # [Visualize](@id VisualizeAPI)
 
+## Band Structure
+
 ```@docs
-plot!
+band_recipe
+bands_recipe
+```
+## DOS
+
+```@docs
+dos_recipe
+```
+
+## Projection
+
+```@docs
+projection_recipe
 ```

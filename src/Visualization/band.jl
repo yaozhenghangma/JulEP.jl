@@ -64,7 +64,7 @@ RecipesBase.@recipe function bands_recipe(bands::Bands,
 
     #plot every band
     for band in bands
-        @series begin
+        RecipesBase.@series begin
             critical_points --> critical_points
             return band, kpoints
         end
@@ -94,13 +94,13 @@ RecipesBase.@recipe function bands_recipe(bands::BandsWithSpin,
     critical_points = nothing,
     line_list = [(:solid, :black), (:dash, :gray)])
 
-    @series begin
+    RecipesBase.@series begin
         critical_points --> critical_points
         line --> line_list[1]
         return bands.bands_up, kpoints
     end
 
-    @series begin
+    RecipesBase.@series begin
         critical_points --> critical_points
         line --> line_list[2]
         return bands.bands_down, kpoints

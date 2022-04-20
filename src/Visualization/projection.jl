@@ -50,7 +50,7 @@ RecipesBase.@recipe function projection_recipe(
     label --> nothing
     for i in 1:projection.number_bands, j in 1:projection.number_kpoints
         if projection.projection_square[j, i, ion, orbit] > tolerance
-            @series begin
+            RecipesBase.@series begin
                 marker_size = magnify*projection.projection_square[j, i, ion, orbit]
                 marker_size = (marker_size > max_size) ? max_size : marker_size
                 seriestype --> :scatter
@@ -101,7 +101,7 @@ RecipesBase.@recipe function projection_recipe(
     max_size = 5,
     tolerance = 0)
 
-    @series begin
+    RecipesBase.@series begin
         ion --> ion
         orbit --> orbit
         magnify --> magnify
@@ -110,7 +110,7 @@ RecipesBase.@recipe function projection_recipe(
         return projection.projection_up, kpoints, bands.bands_up
     end
 
-    @series begin
+    RecipesBase.@series begin
         ion --> ion
         orbit --> orbit
         magnify --> magnify
