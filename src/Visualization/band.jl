@@ -14,7 +14,7 @@
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-"""
+@doc raw"""
     band_recipe(band::Band,
         kpoints::Array{KPoint, 1};
         critical_points = nothing)
@@ -45,7 +45,7 @@ RecipesBase.@recipe function band_recipe(band::Band,
 end
 
 
-"""
+@doc raw"""
     bands_recipe(band::Bands,
         kpoints::Array{KPoint, 1};
         critical_points = nothing)
@@ -74,7 +74,7 @@ RecipesBase.@recipe function bands_recipe(bands::Bands,
 end
 
 
-"""
+@doc raw"""
     bands_recipe(band::BandsWithSpin,
         kpoints::Array{KPoint, 1};
         critical_points = nothing)

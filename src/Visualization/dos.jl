@@ -33,7 +33,6 @@ RecipesBase.@recipe function dos_recipe(dos::DOS; shift = 0, max = 1)
             tmp_dos.dos[i] += shift
         end
     end
-    println(shift)
 
     line --> :blue
     label --> nothing
