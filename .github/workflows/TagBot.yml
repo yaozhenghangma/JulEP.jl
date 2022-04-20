@@ -14,7 +14,9 @@ jobs:
 
       - name: Get the version from the tag
         id: tag_name
-        run: echo ::set-output name=current_version::${GITHUB_REF#refs/tags/v}
+        run: |
+          version=`grep "version" Project.toml | awk -F '"' '{print $2}'`
+          echo ::set-output name=current_version::$version
         shell: bash
 
       - name: Get the changelog entry
