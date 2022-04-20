@@ -35,7 +35,9 @@ function plot!(dos::DOS; line=(:blue), shift::Real=0, max::Real=1)
         end
     end
     Plots.plot!(tmp_dos.energy, tmp_dos.dos, line=line)
-    Plots.plot!([tmp_dos.energy[1], tmp_dos.energy[end]], [max, max], line=(:black))
+    Plots.plot!([tmp_dos.energy[1], tmp_dos.energy[end]],
+        [max+shaft, max+shaft],
+        line=(:black))
     Plots.plot!([0, 0], [shift, shift+max], line=(:black, :dash))
     return nothing
 end

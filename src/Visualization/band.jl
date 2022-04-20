@@ -35,7 +35,7 @@ function plot!(band::Band,
     index, number = index_kpoints(kpoints)
     ticks_range = 1:(float(number-1)/(length(xticks)-1)):number
 
-    plot!(index, band.energy,
+    Plots.plot!(index, band.energy,
         label = nothing,
         line = line,
         xticks = (ticks_range, xticks),
@@ -71,7 +71,7 @@ function plot!(bands::Bands,
     #add dash line at Fermi energy
     x = Array{Int, 1}(1:length(kpoints))
     y = zeros(length(kpoints))
-    plot!(x, y, label=nothing, line=(:dot, :gray))
+    Plots.plot!(x, y, label=nothing, line=(:dot, :gray))
     return nothing
 end
 
@@ -97,11 +97,11 @@ function plot!(bands::BandsWithSpin,
 
     #plot every band
     for band in bands.bands_up
-        Plots.plot!(band, kpoints, xticks; line=line[1])
+        plot!(band, kpoints, xticks; line=line[1])
     end
 
     for band in bands.bands_down
-        Plots.plot!(band, kpoints, xticks; line=line[2])
+        plot!(band, kpoints, xticks; line=line[2])
     end
 
     #add dash line at Fermi energy
