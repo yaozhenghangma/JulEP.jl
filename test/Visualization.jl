@@ -1,8 +1,7 @@
 using MatterEnv
 using Test
-import Pkg
-Pkg.add("Plots")
 using Plots
+
 @testset "Visualization/band.jl" begin
     bands = BandsWithSpin(2,2)
     kpoints = [KPoint(0.5, [0, 0, 0]), KPoint(0.5, [1.0, 1.0, 1.0])]
