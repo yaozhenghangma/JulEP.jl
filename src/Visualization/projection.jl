@@ -58,7 +58,6 @@ RecipesBase.@recipe function projection_recipe(
                 markersize --> marker_size
                 markeralpha --> 0.5
                 markerstrokealpha := 0
-                markerstrokecolor --> :red
 
                 return [index[j]], [bands[i].energy[j]]
             end
