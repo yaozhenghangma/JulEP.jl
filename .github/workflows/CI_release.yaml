@@ -3,7 +3,8 @@ on:
   workflow_dispatch:
   push:
     branches:
-      tags: '*'
+      - main
+    tags: '*'
 concurrency:
   # Skip intermediate builds: always.
   # Cancel intermediate builds: only if it is a pull request build.
