@@ -34,7 +34,8 @@ RecipesBase.@recipe function dos_recipe(dos::DOS; shift = 0, max = 1)
         end
     end
 
-    line --> :blue
+    linecolor --> :blue
+    linestyle --> :solid
     label --> nothing
     return tmp_dos.energy, tmp_dos.dos
 end

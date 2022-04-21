@@ -21,6 +21,6 @@ end
 
 @testset "Visualization/dos.jl" begin
     dos = DOS(Array(-5:0.1:5), Array(0:0.01:1))
-    plot(dos, shfit= 3, max = 10)
+    plot(dos, shift= 3, max = 0.5, linecolor=:red, linestyle=:dash)
     @test true
 end

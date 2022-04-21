@@ -34,7 +34,8 @@ RecipesBase.@recipe function band_recipe(band::Band,
     index, number = index_kpoints(kpoints)
     ticks_range = 1:(float(number-1)/(length(critical_points)-1)):number
 
-    line --> (:solid, :black)
+    linecolor --> :black
+    linestyle --> :solid
     label --> nothing
     if critical_points !== nothing
         xticks -->  (ticks_range, critical_points)
@@ -86,23 +87,28 @@ Plots recipe for band structure.
 - `kpoints::Array{KPoint, 1}`: metadata of k-points
 - `critical_points = nothing`: name of critical points
     showed at x axis
-- `line_list = [(:solid, :black), (:dash, :gray)]`: Style of lines for spin up and spin down
-    default: black solid line for spin up and gray dash line for spin down
+- `colorlist = [:black, :gray]`: Color of lines for spin up and spin down
+    default: black line for spin up and gray line for spin down
+- `stylelist = [:solid, :dash]`: Style of lines for spin up and spin down
+    default: solid line for spin up and dash line for spin down
 """
 RecipesBase.@recipe function bands_recipe(bands::BandsWithSpin,
     kpoints::Array{KPoint, 1};
     critical_points = nothing,
-    line_list = [(:solid, :black), (:dash, :gray)])
+    colorlist = [:black, :gray],
+    stylelist = [:solid, :dash])
 
     RecipesBase.@series begin
         critical_points --> critical_points
-        line --> line_list[1]
+        linecolor --> colorlist[1]
+        linestyle --> stylelist[1]
         return bands.bands_up, kpoints
     end
 
     RecipesBase.@series begin
         critical_points --> critical_points
-        line --> line_list[2]
+        linecolor --> colorlist[2]
+        linestyle --> stylelist[2]
         return bands.bands_down, kpoints
     end
 
