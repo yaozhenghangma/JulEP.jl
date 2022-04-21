@@ -20,7 +20,7 @@ makedocs(;
         "Tutorials" => [
             "tutorials/projection.md",
             "tutorials/band.md",
-            "tutorials/dos.ms",
+            "tutorials/dos.md",
         ],
         "API Reference" => [
             "reference/ReferenceList.md",
