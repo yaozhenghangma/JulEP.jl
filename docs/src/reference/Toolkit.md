@@ -27,4 +27,6 @@ projection_transformation!
 ## Projection
 ```@docs
 distinguish_spin
+get_projection_sign
+apply_projection_sign
 ```

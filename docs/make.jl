@@ -22,6 +22,9 @@ makedocs(;
             "tutorials/band.md",
             "tutorials/dos.md",
         ],
+        "Manual" => [
+            "manual/VASP.md"
+        ],
         "API Reference" => [
             "reference/ReferenceList.md",
             "reference/MatterBase.md",
