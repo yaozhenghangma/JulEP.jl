@@ -23,7 +23,8 @@ makedocs(;
             "tutorials/dos.md",
         ],
         "Manual" => [
-            "manual/VASP.md"
+            "manual/VASP.md",
+            "manual/orbit.md",
         ],
         "API Reference" => [
             "reference/ReferenceList.md",
