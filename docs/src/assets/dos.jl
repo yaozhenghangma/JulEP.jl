@@ -1,20 +1,45 @@
-# [Projected DOS](@id DOSTutorial)
+using MatterEnv
+using Plots
+using LaTeXStrings
 
-Here, we use a PROCAR with different k points distribution, and only modify the final step of last [tutorial](@ref BandTutorial) to
-plot projected DOS.
+# load metadata from PROCAR
+projection_all, _, _, projection_z, kpoints, bands = load_procar("PROCAR"; noncollinear=true)
 
-In the last step, we generate projected DOS using Gaussian smearing method
-```julia
+# set Fermi energy to be zero
+fermi_energy =  -3.0009
+shift_energy!(bands, -fermi_energy)
+
+# linear transformation for projected wave function
+transformation_matrix1 =
+[
+    -1/√3   √2/√3   0       0       0;
+    √2/√3   1/√3    0       0       0;
+    0       0       1       0       0;
+    0       0       0       √2/√3   1/√3;
+    0       0       0       -1/√3   √2/√3;
+]
+transformation_matrix2 =
+[
+    1       0       0       0       0;
+    0       1/√2    0       0       1/√2im;
+    0       0       1       0       0;
+    0       0       0       1       0;
+    0       1/√2    0       0       -1/√2im;
+]
+projection_transformation!(projection_all, transformation_matrix1, transformation_matrix2)
+
+# distinguish spin up and spin down, using the sign of projected wave function character
+projection, bands = distinguish_spin(projection_all, projection_z, bands)
+
+# generate projected dos using Gaussian smearing method
 smear(x, x₀) = gaussian(x, x₀; σ=0.05)
 pdos_up_0, pdos_down_0 = generate_dos(bands, kpoints, projection; smear=smear, ions=[2], orbits=[2,3,4])
 pdos_up_1, pdos_down_1 = generate_dos(bands, kpoints, projection; smear=smear, ions=[1], orbits=[7])
 pdos_up_2, pdos_down_2 = generate_dos(bands, kpoints, projection; smear=smear, ions=[1], orbits=[5, 8])
 pdos_up_3, pdos_down_3 = generate_dos(bands, kpoints, projection; smear=smear, ions=[1], orbits=[6])
 pdos_up_4, pdos_down_4 = generate_dos(bands, kpoints, projection; smear=smear, ions=[1], orbits=[9])
-```
 
-and plot the projected DOS:
-```julia
+# some basic setting for the figure
 plot(
     dpi = 300,
     size = (800, 600),
@@ -62,9 +87,3 @@ plot!([-6, 6], [16, 16], linecolor = :black)
 plot!([0, 0], [0, 20], linecolor = :black, linestyle = :dash)
 
 savefig("dos.png")
-```
-
-The result figure is plotted as
-![dos](../assets/dos.png)
-
-The script can be download from [here](../assets/dos.jl).

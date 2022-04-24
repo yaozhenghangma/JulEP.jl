@@ -1,28 +1,15 @@
-# [Projected Band Structure](@id BandTutorial)
-
-Here, we will show how to plot projected band structure from PROCAR, as the first example.
-
-To finish this task, we need three packages.
-```julia
 using MatterEnv
 using Plots
 using LaTeXStrings
-```
 
-The first step is to load metadata from PROCAR file, you can check the details from this [section](@ref PROCARManual).
-Here, we use a GGA+U+SOC result with `lorbit=12` tag.
-```julia
+# load metadata from PROCAR
 projection_all, _, _, projection_z, kpoints, bands = load_procar("PROCAR"; noncollinear=true)
-```
 
-To make the image look better, we set Fermi energy to be 0.
-```julia
+# set Fermi energy to be zero
 fermi_energy =  -3.0009
 shift_energy!(bands, -fermi_energy)
-```
 
-Then we define two transformation matrix to do orbit transformation. You chan check the details from this [section](@ref OrbitManual)
-```julia
+# linear transformation for projected wave function
 transformation_matrix1 =
 [
     -1/√3   √2/√3   0       0       0;
@@ -40,15 +27,10 @@ transformation_matrix2 =
     0       1/√2    0       0       -1/√2im;
 ]
 projection_transformation!(projection_all, transformation_matrix1, transformation_matrix2)
-```
 
-Since VASP doesn't distinguish between major spin and minor spin, we use a [trick](@ref TrickManual).
-```julia
+# distinguish spin up and spin down, using the sign of projected wave function character
 projection, bands = distinguish_spin(projection_all, projection_z, bands)
-```
 
-Finally, we can plot the projected band structure.
-```julia
 critical_points = ["Γ", "M", "K", "Γ"]      # Critical points of chosen k points
 tolerance = 0.15                            # minimum value of projection character value to be plotted
 magnify = 7.0                               # marker_size = magnify * projection_character
@@ -89,9 +71,3 @@ plot!(projection, kpoints, bands; ion=1, orbit=8, markeralpha =1, markerstrokeco
 plot!([0, length(kpoints)], [0, 0], linecolor = :gray, linestyle = :dash, label=nothing)
 
 savefig("band.png")
-
-```
-
-![band](../assets/band.png)
-
-You can download this example script from [here](../assets/band.jl).

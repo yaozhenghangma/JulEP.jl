@@ -1,6 +1,6 @@
 # [Toolkit](@id ToolkitAPI)
 
-## Smearing Function
+## [Smearing Function](@id SmearAPI)
 
 ```@docs
 gaussian
@@ -11,7 +11,6 @@ lorentzian
 
 ```@docs
 generate_dos
-generate_pdos
 ```
 
 ## Energy Shift

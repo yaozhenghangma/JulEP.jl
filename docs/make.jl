@@ -18,19 +18,19 @@ makedocs(;
     pages=[
         "Introduction" => "index.md",
         "Tutorials" => [
-            "tutorials/projection.md",
             "tutorials/band.md",
             "tutorials/dos.md",
         ],
         "Manual" => [
             "manual/VASP.md",
             "manual/orbit.md",
+            "manual/DOS.md",
+            "manual/visualize.md",
         ],
         "API Reference" => [
             "reference/ReferenceList.md",
             "reference/MatterBase.md",
             "reference/Toolkit.md",
-            "reference/Visualization.md",
             "reference/VASP.md",
         ],
     ],
