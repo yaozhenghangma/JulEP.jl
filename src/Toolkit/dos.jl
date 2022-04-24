@@ -85,8 +85,10 @@ Generate projected electronic density of states using bands and kpoints.
 - `projection::Projection`: metadata of projection
 - `smear::Function=gaussian`: smearing function, default: Gaussian smear
 - `energy_number::Integer=10000`: number of energy points, default 10000
-- `ions::Array{<:Integer, 1}=nothing`: index of ions which wavefunction is projected to
-- `orbits::Array{<:Integer, 1}=nothing`: index of orbitss which wavefunction is projected to
+- `ions::Union{Array{<:Integer, 1}, UnitRange{<:Integer}, Nothing}=nothing`:
+    index of ions which wavefunction is projected to
+- `orbits::Union{Array{<:Integer, 1}, UnitRange{<:Integer}, Nothing}=nothing`:
+    index of orbitss which wavefunction is projected to
 
 # Returns
 - `pdos::DOS`: metadata of projected dos
@@ -94,7 +96,16 @@ Generate projected electronic density of states using bands and kpoints.
 function generate_dos(bands::Bands, kpoints::Array{KPoint, 1},
     projection::Projection;
     smear::Function=gaussian, energy_number::Integer=10000,
-    ions::Array{<:Integer, 1}=nothing, orbits::Array{<:Integer, 1}=nothing)
+    ions::Union{Array{<:Integer, 1}, UnitRange{<:Integer}, Nothing}=nothing,
+    orbits::Union{Array{<:Integer, 1}, UnitRange{<:Integer}, Nothing}=nothing)
+
+    if ions === nothing
+        ions = 1:projection.number_ions
+    end
+
+    if orbits === nothing
+        orbits = 1:9
+    end
 
     pdos = DOS()
     energy = hcat([band.energy for band in bands]...)
@@ -127,8 +138,10 @@ Generate projected electronic density of states using bands and kpoints.
 - `projection::ProjectionWithSpin`: metadata of projection
 - `smear::Function=gaussian`: smearing function, default: Gaussian smear
 - `energy_number::Integer=10000`: number of energy points, default 10000
-- `ions::Array{<:Integer, 1}=nothing`: index of ions which wavefunction is projected to
-- `orbits::Array{<:Integer, 1}=nothing`: index of orbitss which wavefunction is projected to
+- `ions::Union{Array{<:Integer, 1}, UnitRange{<:Integer}, Nothing}=nothing`:
+    index of ions which wavefunction is projected to
+- `orbits::Union{Array{<:Integer, 1}, UnitRange{<:Integer}, Nothing}=nothing`:
+    index of orbitss which wavefunction is projected to
 
 # Returns
 - `pdos1::DOS`: metadata of projected dos of spin up
@@ -137,7 +150,8 @@ Generate projected electronic density of states using bands and kpoints.
 function generate_dos(bands::BandsWithSpin, kpoints::Array{KPoint, 1},
     projection::ProjectionWithSpin;
     smear::Function=gaussian, energy_number::Integer=10000,
-    ions::Array{<:Integer, 1}=nothing, orbits::Array{<:Integer, 1}=nothing)
+    ions::Union{Array{<:Integer, 1}, UnitRange{<:Integer}, Nothing}=nothing,
+    orbits::Union{Array{<:Integer, 1}, UnitRange{<:Integer}, Nothing}=nothing)
 
     pdos1 = generate_dos(bands.bands_up, kpoints, projection.projection_up;
         smear=smear, energy_number=energy_number, ions=ions, orbits=orbits)
