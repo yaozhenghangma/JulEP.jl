@@ -72,7 +72,7 @@ end
 
 
 """
-    generate_pdos(bands::Bands, kpoints::Array{KPoint, 1},
+    generate_dos(bands::Bands, kpoints::Array{KPoint, 1},
         projection::Projection;
         smear::Function=gaussian, energy_number::Integer=10000,
         ions::Array{Integer, 1}=nothing, orbits::Array{Integer, 1}=nothing)
@@ -91,7 +91,7 @@ Generate projected electronic density of states using bands and kpoints.
 # Returns
 - `pdos::DOS`: metadata of projected dos
 """
-function generate_pdos(bands::Bands, kpoints::Array{KPoint, 1},
+function generate_dos(bands::Bands, kpoints::Array{KPoint, 1},
     projection::Projection;
     smear::Function=gaussian, energy_number::Integer=10000,
     ions::Array{<:Integer, 1}=nothing, orbits::Array{<:Integer, 1}=nothing)
@@ -114,7 +114,7 @@ end
 
 
 """
-    generate_pdos(bands::Bands, kpoints::Array{KPoint, 1},
+    generate_dos(bands::Bands, kpoints::Array{KPoint, 1},
         projection::Projection;
         smear::Function=gaussian, energy_number::Integer=10000,
         ions::Array{Integer, 1}=nothing, orbits::Array{Integer, 1}=nothing)
@@ -134,14 +134,14 @@ Generate projected electronic density of states using bands and kpoints.
 - `pdos1::DOS`: metadata of projected dos of spin up
 - `pdos2::DOS`: metadata of projected dos of spin down
 """
-function generate_pdos(bands::BandsWithSpin, kpoints::Array{KPoint, 1},
+function generate_dos(bands::BandsWithSpin, kpoints::Array{KPoint, 1},
     projection::ProjectionWithSpin;
     smear::Function=gaussian, energy_number::Integer=10000,
     ions::Array{<:Integer, 1}=nothing, orbits::Array{<:Integer, 1}=nothing)
 
-    pdos1 = generate_pdos(bands.bands_up, kpoints, projection.projection_up;
+    pdos1 = generate_dos(bands.bands_up, kpoints, projection.projection_up;
         smear=smear, energy_number=energy_number, ions=ions, orbits=orbits)
-    pdos2 = generate_pdos(bands.bands_down, kpoints, projection.projection_down;
+    pdos2 = generate_dos(bands.bands_down, kpoints, projection.projection_down;
         smear=smear, energy_number=energy_number, ions=ions, orbits=orbits)
     return pdos1, pdos2
 end

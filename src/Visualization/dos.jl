@@ -24,7 +24,7 @@ Plots recipe for dos.
 - `shift=0`: shift of dos value, default 0
 - `max=1`: maximum value of dos value, default 1
 """
-RecipesBase.@recipe function dos_recipe(dos::DOS; shift = 0, max = 1)
+RecipesBase.@recipe function dos_recipe(dos::DOS; shift = 0, max = 1, stretch_ratio = 1)
     tmp_dos = deepcopy(dos)
     for i in 1:length(tmp_dos.dos)
         if tmp_dos.dos[i] > max
@@ -33,6 +33,8 @@ RecipesBase.@recipe function dos_recipe(dos::DOS; shift = 0, max = 1)
             tmp_dos.dos[i] += shift
         end
     end
+
+    tmp_dos.dos = tmp_dos.dos .* stretch_ratio
 
     linecolor --> :blue
     linestyle --> :solid

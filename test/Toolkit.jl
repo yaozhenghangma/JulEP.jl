@@ -15,7 +15,7 @@ end
         Array{Float64, 4}(zeros(10, 1, 1, 9)))
     smear_function(x, x₀) = gaussian(x, x₀; σ=1.0)
     dos = generate_dos(bands, kpoints; smear=smear_function, energy_number=91)
-    pdos = generate_pdos(bands, kpoints, projection; smear=smear_function, energy_number=91,
+    pdos = generate_dos(bands, kpoints, projection; smear=smear_function, energy_number=91,
         ions=[1], orbits=Array(1:9))
     @test dos.energy == Array(0:0.01:0.9)
     @test pdos.energy == Array(0:0.01:0.9)
@@ -23,8 +23,8 @@ end
     bandsw = BandsWithSpin(bands, bands)
     projectionw = ProjectionWithSpin(projection, projection)
     dos1, dos2 = generate_dos(bandsw, kpoints; smear=smear_function, energy_number=91)
-    pdos1, pdos2 = generate_pdos(bandsw, kpoints, projectionw; smear=smear_function,
-        energy_number=91, ions=[1], orbits=Array(1:9))
+    pdos1, pdos2 = generate_dos(bandsw, kpoints, projectionw; smear=smear_function,
+        energy_number=91, ions=[1], orbits=1:9)
     @test dos1.energy == Array(0:0.01:0.9)
     @test pdos1.energy == Array(0:0.01:0.9)
 end

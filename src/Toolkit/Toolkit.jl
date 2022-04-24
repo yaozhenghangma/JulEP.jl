@@ -20,7 +20,7 @@ include("smear.jl")
 export gaussian, lorentzian
 
 include("dos.jl")
-export generate_dos, generate_pdos
+export generate_dos
 
 include("projection.jl")
 export get_projection_sign, apply_projection_sign, distinguish_spin
