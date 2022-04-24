@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Projected DOS · MatterEnv.jl</title><script data-outdated-warner src="../../assets/warner.js"></script><link rel="canonical" href="https://yaozhenghangma.github.io/MatterEnv.jl/tutorials/dos/"/><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.044/juliamono.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.11/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><a class="docs-logo" href="../../"><img src="../../assets/logo.png" alt="MatterEnv.jl logo"/></a><form class="docs-search" action="../../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../../">Introduction</a></li><li><input class="collapse-toggle" id="menuitem-2" type="checkbox" checked/><label class="tocitem" for="menuitem-2"><span class="docs-label">Tutorials</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../band/">Projected Band Structure</a></li><li class="is-active"><a class="tocitem" href>Projected DOS</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-3" type="checkbox"/><label class="tocitem" for="menuitem-3"><span class="docs-label">Manual</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../../manual/VASP/">VASP file I/O</a></li><li><a class="tocitem" href="../../manual/orbit/">Orbit Transformation</a></li><li><a class="tocitem" href="../../manual/DOS/">Generate DOS</a></li><li><a class="tocitem" href="../../manual/visualize/">Visualization</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-4" type="checkbox"/><label class="tocitem" for="menuitem-4"><span class="docs-label">API Reference</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../../reference/ReferenceList/">API List</a></li><li><a class="tocitem" href="../../reference/MatterBase/">Basic Type</a></li><li><a class="tocitem" href="../../reference/Toolkit/">Toolkit</a></li><li><a class="tocitem" href="../../reference/VASP/">VASP File</a></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Tutorials</a></li><li class="is-active"><a href>Projected DOS</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Projected DOS</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/yaozhenghangma/MatterEnv.jl/blob/master/docs/src/tutorials/dos.md#" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h1 id="DOSTutorial"><a class="docs-heading-anchor" href="#DOSTutorial">Projected DOS</a><a id="DOSTutorial-1"></a><a class="docs-heading-anchor-permalink" href="#DOSTutorial" title="Permalink"></a></h1><p>Here, we use a PROCAR with different k points distribution, and only modify the final step of last <a href="../band/#BandTutorial">tutorial</a> to plot projected DOS.</p><p>In the last step, we generate projected DOS using Gaussian smearing method</p><pre><code class="language-julia hljs">smear(x, x₀) = gaussian(x, x₀; σ=0.05)
+pdos_up_0, pdos_down_0 = generate_dos(bands, kpoints, projection; smear=smear, ions=[2], orbits=[2,3,4])
+pdos_up_1, pdos_down_1 = generate_dos(bands, kpoints, projection; smear=smear, ions=[1], orbits=[7])
+pdos_up_2, pdos_down_2 = generate_dos(bands, kpoints, projection; smear=smear, ions=[1], orbits=[5, 8])
+pdos_up_3, pdos_down_3 = generate_dos(bands, kpoints, projection; smear=smear, ions=[1], orbits=[6])
+pdos_up_4, pdos_down_4 = generate_dos(bands, kpoints, projection; smear=smear, ions=[1], orbits=[9])</code></pre><p>and plot the projected DOS:</p><pre><code class="language-julia hljs">plot(
+    dpi = 300,
+    size = (800, 600),
+    framestyle = :box,
+    fontfamily = &quot;Times Roman&quot;,
+    ylabel = &quot;DOS (states/eV)&quot;,
+    xlabel = &quot;Energy (eV)&quot;,
+    guidefontsize = 25,
+    ylim = (0, 20),
+    xlim = (-6.0, 6.0),
+    legend = false,
+    yticks = (0:4:20, [&quot;0&quot;, &quot;2&quot;, &quot;4&quot;, &quot;4&quot;, &quot;4&quot;, &quot;4&quot;]),
+    grid = :y,
+    gridstyle = :solid,
+    tick_direction = :in,
+    tickfontsize = 23,
+    bottom_margin = 1.2Plots.cm,
+    left_margin = 1.0Plots.cm,
+)
+
+# plot projected dos, blue line for spin up and red line for spin down
+plot!(pdos_up_0; shift = 0, max = 2, stretch_ratio = 2, linecolor = :blue)
+plot!(pdos_up_1; shift = 4, max = 4, linecolor = :blue)
+plot!(pdos_up_2; shift = 8, max = 4, linecolor = :blue)
+plot!(pdos_up_3; shift = 12, max = 4, linecolor = :blue)
+plot!(pdos_up_4; shift = 16, max = 4,linecolor = :blue)
+plot!(pdos_down_0; shift = 0, max = 2, stretch_ratio = 2,linecolor = :red)
+plot!(pdos_down_1; shift = 4, max = 4, linecolor = :red)
+plot!(pdos_down_2; shift = 8, max = 4, linecolor = :red)
+plot!(pdos_down_3; shift = 12, max = 4, linecolor = :red)
+plot!(pdos_down_4; shift = 16, max = 4, linecolor = :red)
+
+# annotation
+annotate!(5, 2, (L&quot;3p&quot;, 23))
+annotate!(5, 6, (L&quot;a_{1g}&quot;, 23))
+annotate!(5, 10, (L&quot;e_{g}^{\sigma}&quot;, 23))
+annotate!(5, 14, (L&quot;L_{z-}&quot;, 23))
+annotate!(5, 18, (L&quot;L_{z+}&quot;, 23))
+
+# grid line
+plot!([-6, 6], [4, 4], linecolor = :black)
+plot!([-6, 6], [8, 8], linecolor = :black)
+plot!([-6, 6], [12, 12], linecolor = :black)
+plot!([-6, 6], [16, 16], linecolor = :black)
+plot!([0, 0], [0, 20], linecolor = :black, linestyle = :dash)
+
+savefig(&quot;dos.png&quot;)</code></pre><p>The result figure is plotted as <img src="../../assets/dos.png" alt="dos"/></p><p>The script can be download from <a href="../../assets/dos.jl">here</a>.</p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../band/">« Projected Band Structure</a><a class="docs-footer-nextpage" href="../../manual/VASP/">VASP file I/O »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.16 on <span class="colophon-date" title="Sunday 24 April 2022 18:18">Sunday 24 April 2022</span>. Using Julia version 1.7.2.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
