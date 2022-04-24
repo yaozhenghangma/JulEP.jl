@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.2]
+### Added
+- Complete documents
+- generate_dos function for pdos
+
+### Remoded
+- generate_pdos function
+
 ## [0.2.1]
 ### Added
 - Plots recipe for dos, projection and band structure
@@ -54,6 +62,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - load and save POSCAR
 
 [Unreleased]: https://github.com/yaozhenghangma/MatterEnv/blob/main/CHANGELOG.md
+[0.2.2]: https://github.com/yaozhenghangma/MatterEnv.jl/tree/v0.2.2
 [0.2.1]: https://github.com/yaozhenghangma/MatterEnv.jl/tree/v0.2.1
 [0.2.0]: https://github.com/yaozhenghangma/MatterEnv.jl/tree/v0.2.0
 [0.1.5]: https://github.com/yaozhenghangma/MatterEnv.jl/tree/v0.1.5
