@@ -17,3 +17,6 @@ include("kpoint.jl")
 include("band.jl")
 include("dos.jl")
 include("projection.jl")
+include("ticks.jl")
+
+export tickslength, xtickslength, ytickslength
