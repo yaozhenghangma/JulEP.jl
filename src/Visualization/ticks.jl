@@ -35,7 +35,7 @@ RecipesBase.@recipe function ticks_recipe(length::tickslength)
     dx, dy = length.l*(xl[2] - xl[1]), length.l*r*(yl[2] - yl[1])
     linecolor --> :black
     label --> nothing
-    @series begin
+    RecipesBase.@series begin
         return [xticks xticks]', [y1 y1 .+ dy]'
     end
 
