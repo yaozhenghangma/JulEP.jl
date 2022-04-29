@@ -4,7 +4,20 @@ pdos_up_0, pdos_down_0 = generate_dos(bands, kpoints, projection; smear=smear, i
 pdos_up_1, pdos_down_1 = generate_dos(bands, kpoints, projection; smear=smear, ions=[1], orbits=[7])
 pdos_up_2, pdos_down_2 = generate_dos(bands, kpoints, projection; smear=smear, ions=[1], orbits=[5, 8])
 pdos_up_3, pdos_down_3 = generate_dos(bands, kpoints, projection; smear=smear, ions=[1], orbits=[6])
-pdos_up_4, pdos_down_4 = generate_dos(bands, kpoints, projection; smear=smear, ions=[1], orbits=[9])</code></pre><p>and plot the projected DOS:</p><pre><code class="language-julia hljs">plot(
+pdos_up_4, pdos_down_4 = generate_dos(bands, kpoints, projection; smear=smear, ions=[1], orbits=[9])</code></pre><p>and plot the projected DOS:</p><pre><code class="language-julia hljs">function ticks_length!(;tl=0.02)
+    p = Plots.current()
+    xticks, yticks = Plots.xticks(p)[1][1], Plots.yticks(p)[1][1]
+    xl, yl = Plots.xlims(p), Plots.ylims(p)
+    x1, y1 = zero(yticks) .+ xl[1], zero(xticks) .+ yl[1]
+    sz = p.attr[:size]
+    r = sz[1]/sz[2]
+    dx, dy = tl*(xl[2] - xl[1]), tl*r*(yl[2] - yl[1])
+    plot!([xticks xticks]&#39;, [y1 y1 .+ dy]&#39;, c=:black, labels=false)
+    plot!([x1 x1 .+ dx]&#39;, [yticks yticks]&#39;, c=:black, labels=false, xlims=xl, ylims=yl)
+    return Plots.current()
+end
+
+plot(
     dpi = 300,
     size = (800, 600),
     framestyle = :box,
@@ -23,6 +36,8 @@ pdos_up_4, pdos_down_4 = generate_dos(bands, kpoints, projection; smear=smear, i
     bottom_margin = 1.2Plots.cm,
     left_margin = 1.0Plots.cm,
 )
+
+ticks_length!(;tl=0.02)
 
 # plot projected dos, blue line for spin up and red line for spin down
 plot!(pdos_up_0; shift = 0, max = 2, stretch_ratio = 2, linecolor = :blue)
@@ -50,4 +65,4 @@ plot!([-6, 6], [12, 12], linecolor = :black)
 plot!([-6, 6], [16, 16], linecolor = :black)
 plot!([0, 0], [0, 20], linecolor = :black, linestyle = :dash)
 
-savefig(&quot;dos.png&quot;)</code></pre><p>The result figure is plotted as <img src="../../assets/dos.png" alt="dos"/></p><p>The script can be download from <a href="../../assets/dos.jl">here</a>.</p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../band/">« Projected Band Structure</a><a class="docs-footer-nextpage" href="../../manual/VASP/">VASP file I/O »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.16 on <span class="colophon-date" title="Thursday 28 April 2022 06:33">Thursday 28 April 2022</span>. Using Julia version 1.7.2.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+savefig(&quot;dos.png&quot;)</code></pre><p>The result figure is plotted as <img src="../../assets/dos.png" alt="dos"/></p><p>The script can be download from <a href="../../assets/dos.jl">here</a>.</p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../band/">« Projected Band Structure</a><a class="docs-footer-nextpage" href="../../manual/VASP/">VASP file I/O »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.16 on <span class="colophon-date" title="Friday 29 April 2022 14:01">Friday 29 April 2022</span>. Using Julia version 1.7.2.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

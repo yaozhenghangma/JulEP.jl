@@ -18,10 +18,23 @@ transformation_matrix2 =
     0       0       0       1       0;
     0       1/√2    0       0       -1/√2im;
 ]
-projection_transformation!(projection_all, transformation_matrix1, transformation_matrix2)</code></pre><p>Since VASP doesn&#39;t distinguish between major spin and minor spin, we use a <a href="../../manual/VASP/#TrickManual">trick</a>.</p><pre><code class="language-julia hljs">projection, bands = distinguish_spin(projection_all, projection_z, bands)</code></pre><p>Finally, we can plot the projected band structure.</p><pre><code class="language-julia hljs">critical_points = [&quot;Γ&quot;, &quot;M&quot;, &quot;K&quot;, &quot;Γ&quot;]      # Critical points of chosen k points
+projection_transformation!(projection_all, transformation_matrix1, transformation_matrix2)</code></pre><p>Since VASP doesn&#39;t distinguish between major spin and minor spin, we use a <a href="../../manual/VASP/#TrickManual">trick</a>.</p><pre><code class="language-julia hljs">projection, bands = distinguish_spin(projection_all, projection_z, bands)</code></pre><p>Finally, we can plot the projected band structure. Since Plots doesn&#39;t provide attribute to control ticks&#39; length, we use a <a href="https://discourse.julialang.org/t/tick-size-in-plots-jl/74793/4">function</a> to solve this problem.</p><pre><code class="language-julia hljs">critical_points = [&quot;Γ&quot;, &quot;M&quot;, &quot;K&quot;, &quot;Γ&quot;]      # Critical points of chosen k points
 tolerance = 0.15                            # minimum value of projection character value to be plotted
 magnify = 7.0                               # marker_size = magnify * projection_character
 max_size = 3.0                              # maximum value of marker size
+
+function ticks_length!(;tl=0.02)
+    p = Plots.current()
+    xticks, yticks = Plots.xticks(p)[1][1], Plots.yticks(p)[1][1]
+    xl, yl = Plots.xlims(p), Plots.ylims(p)
+    x1, y1 = zero(yticks) .+ xl[1], zero(xticks) .+ yl[1]
+    sz = p.attr[:size]
+    r = sz[1]/sz[2]
+    dx, dy = tl*(xl[2] - xl[1]), tl*r*(yl[2] - yl[1])
+    plot!([xticks xticks]&#39;, [y1 y1 .+ dy]&#39;, c=:black, labels=false)
+    plot!([x1 x1 .+ dx]&#39;, [yticks yticks]&#39;, c=:black, labels=false, xlims=xl, ylims=yl)
+    return Plots.current()
+end
 
 # some basic setting for the figure
 plot(
@@ -44,6 +57,8 @@ plot(
     left_margin = 1.0Plots.cm,
 )
 
+ticks_length!(;tl=0.02)
+
 # plot all bands. black solid for spin up and gray dash line for spin down
 plot!(bands, kpoints; critical_points = critical_points, colorlist = [:black, :black], stylelist = [:solid, :dash])
 
@@ -58,4 +73,4 @@ plot!(projection, kpoints, bands; ion=1, orbit=8, markeralpha =1, markerstrokeco
 plot!([0, length(kpoints)], [0, 0], linecolor = :gray, linestyle = :dash, label=nothing)
 
 savefig(&quot;band.png&quot;)
-</code></pre><p><img src="../../assets/band.png" alt="band"/></p><p>You can download this example script from <a href="../../assets/band.jl">here</a>.</p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../../">« Introduction</a><a class="docs-footer-nextpage" href="../dos/">Projected DOS »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.16 on <span class="colophon-date" title="Thursday 28 April 2022 06:33">Thursday 28 April 2022</span>. Using Julia version 1.7.2.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+</code></pre><p><img src="../../assets/band.png" alt="band"/></p><p>You can download this example script from <a href="../../assets/band.jl">here</a>.</p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../../">« Introduction</a><a class="docs-footer-nextpage" href="../dos/">Projected DOS »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.16 on <span class="colophon-date" title="Friday 29 April 2022 14:01">Friday 29 April 2022</span>. Using Julia version 1.7.2.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
