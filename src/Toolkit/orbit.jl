@@ -66,3 +66,23 @@ function projection_transformation!(projection::ProjectionWithSpin,
     projection_transformation!(projection.projection_down, transfer_matrix...; orbit=orbit)
     return nothing
 end
+
+
+function transform!(projection::ProjectionWithSpin,
+    matrix::Matrix{<:Number};
+    spin::bool=false)
+
+    if spin
+        for i in 1:projection.projection_up.number_kpoints,
+            j in 1:projection.projection_up.number_bands,
+            k in 1:projection.projection_up.number_ions
+            up_result = matrix[1:5, 1:5] * projection.projection_up[i, j, k, 5:9]
+                + matrix[1:5, 6:10] * projection.projection_down[i, j, k, 5:9]
+            down_result = matrix[6:10, 1:5] * projection.projection_up[i, j, k, 5:9]
+                + matrix[6:10, 6:10] * projection.projection_down[i, j, k, 5:9]
+            projection.projection_up.projection[i, j, k, 5:9] = up_result
+            projection.projection_down.projection[i, j, k, 5:9] = down_result
+        end
+    end
+    return nothing
+end

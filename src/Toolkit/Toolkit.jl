@@ -14,7 +14,7 @@
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 include("orbit.jl")
-export projection_transformation!
+export projection_transformation!, transform!
 
 include("smear.jl")
 export gaussian, lorentzian
