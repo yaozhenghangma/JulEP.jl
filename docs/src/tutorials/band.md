@@ -1,8 +1,8 @@
 # [Projected Band Structure](@id BandTutorial)
 
-Here, we will show how to plot projected band structure from PROCAR, as the first example.
+Here, we will show how to plot projected band structure using PROCAR, as our first example.
 
-To finish this task, we need three packages.
+To complete this task, we need three packages.
 ```julia
 using MatterEnv
 using Plots

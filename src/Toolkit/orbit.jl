@@ -70,7 +70,7 @@ end
 
 function transform!(projection::ProjectionWithSpin,
     matrix::Matrix{<:Number};
-    spin::bool=false)
+    spin::Bool=false)
 
     if spin
         for i in 1:projection.projection_up.number_kpoints,
