@@ -31,8 +31,7 @@ RecipesBase.@recipe function band_recipe(band::Band,
     kpoints::Array{KPoint, 1};
     critical_points = nothing)
 
-    index, number = index_kpoints(kpoints)
-    ticks_range = 1:(float(number-1)/(length(critical_points)-1)):number
+    distance, ticks_range = kpath_distance(kpoints)
 
     linecolor --> :black
     linestyle --> :solid
@@ -40,9 +39,9 @@ RecipesBase.@recipe function band_recipe(band::Band,
     if critical_points !== nothing
         xticks -->  (ticks_range, critical_points)
     end
-    xlims --> (1, number)
+    xlims --> (0, ticks_range[end])
 
-    return index, band.energy
+    return distance, band.energy
 end
 
 

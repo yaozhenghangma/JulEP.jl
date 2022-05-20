@@ -25,3 +25,16 @@ function index_kpoints(kpoints)
     push!(index, ind)
     return index, ind
 end
+
+function kpath_distance(kpoints)
+    distance = Array{Float64, 1}([0.0])
+    critical_point_index = Array{Float64, 1}([0.0])
+    for i in 2:length(kpoints)
+        push!(distance, norm(kpoints[i].coordinate-kpoints[i-1].coordinate) + distance[i-1])
+        if kpoints[i] == kpoints[i-1]
+            push!(critical_point_index, distance[i])
+        end
+    end
+    push!(critical_point_index, distance[i])
+    return distance, critical_point_index
+end

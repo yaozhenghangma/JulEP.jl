@@ -15,6 +15,7 @@
 
 module MatterEnv
 
+using LinearAlgebra
 using Printf
 import RecipesBase
 

@@ -46,7 +46,7 @@ RecipesBase.@recipe function projection_recipe(
     max_size = 5,
     tolerance = 0)
 
-    index,  = index_kpoints(kpoints)
+    distance, _ = kpath_distance(kpoints)
     label --> nothing
     for i in 1:projection.number_bands, j in 1:projection.number_kpoints
         if projection.projection_square[j, i, ion, orbit] > tolerance
@@ -59,7 +59,7 @@ RecipesBase.@recipe function projection_recipe(
                 markeralpha --> 1.0
                 markerstrokealpha := 0
 
-                return [index[j]], [bands[i].energy[j]]
+                return [distance[j]], [bands[i].energy[j]]
             end
         end
     end
