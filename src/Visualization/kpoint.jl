@@ -35,6 +35,6 @@ function kpath_distance(kpoints)
             push!(critical_point_index, distance[i])
         end
     end
-    push!(critical_point_index, distance[i])
+    push!(critical_point_index, distance[end])
     return distance, critical_point_index
 end
