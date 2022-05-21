@@ -25,30 +25,10 @@ Applied sign function to squared projection
 - `Array{Float, 4}`: sign of each squared projection
 """
 function get_projection_sign(projection::Projection)
-    sign_matrix = deepcopy(projection.projection_square)
-    sign_matrix[:,:,:,1] = sign.(sign_matrix[:,:,:,1])       #s orbit
-    sign_matrix[:,:,:,2:4] .= sign.(sum(sign_matrix[:,:,:,2:4], dims=4))        #p orbit
-    sign_matrix[:,:,:,5:9] .= sign.(sum(sign_matrix[:,:,:,5:9], dims=4))        #d orbit
-    return sign_matrix
-end
-
-
-@doc raw"""
-    apply_projection_sign(projection::Projection, sign_matrix::Array{<:Real, 4})
-
-Applied sign of projection to projection.
-
-# Arguments
-- `projection::Projection`: projection of wavefunction
-- `sign_matrix::Array{Integer, 4}`: sign returned from get_projection_sign function
-
-# Returns
-- `Projection`: new projection
-"""
-function apply_projection_sign(projection::Projection, sign_matrix::Array{<:Real, 4})
-    new_projection = deepcopy(projection)
-    new_projection.projection_square = new_projection.projection_square .* sign_matrix
-    return new_projection
+    sign_matrix = sign.(sum(projection.projection_square, dims=[1,3,4]))
+    up_index = findall(sign_matrix[1, :, 1, 1] .== 1)
+    down_index = findall(sign_matrix[1, :, 1, 1] .== -1)
+    return up_index, down_index
 end
 
 
@@ -71,15 +51,34 @@ Distinguish projection of spin up and spin down. (Used in projection loaded from
 function distinguish_spin(projection_all::Projection,
     projection_axis::Projection,
     bands::Bands)
-    sign_matrix = get_projection_sign(projection_axis)
-    projection_axis_new = apply_projection_sign(projection_all, sign_matrix)
-    projection_up = deepcopy(projection_all)
-    projection_down = deepcopy(projection_all)
-    @. projection_up.projection_square =
-        (projection_all.projection_square + projection_axis_new.projection_square)/2
-    @. projection_down.projection_square =
-        (projection_all.projection_square - projection_axis_new.projection_square)/2
-    projection = ProjectionWithSpin(projection_up, projection_down)
-    bands_new = BandsWithSpin(bands, bands)
-    return projection, bands_new
+    up_index, down_index = get_projection_sign(projection_axis)
+    projection_up = Projection()
+    projection_down = Projection()
+    bands_up = Bands()
+    bands_down = Bands()
+
+    # Projection for spin up
+    projection_up.number_bands = length(up_index)
+    projection_up.number_ions = projection_all.number_ions
+    projection_up.number_kpoints = projection_all.number_kpoints
+    projection_up.projection = deepcopy(projection_all.projection[:,up_index,:,:])
+    projection_up.projection_square =
+        deepcopy(projection_all.projection_square[:,up_index,:,:])
+
+    # Projection for spin down
+    projection_down.number_bands = length(down_index)
+    projection_down.number_ions = projection_all.number_ions
+    projection_down.number_kpoints = projection_all.number_kpoints
+    projection_down.projection = deepcopy(projection_all.projection[:,down_index,:,:])
+    projection_down.projection_square =
+        deepcopy(projection_all.projection_square[:,down_index,:,:])
+
+    # Bands for spin up
+    bands_up.bands = deepcopy(bands.bands[up_index])
+
+    # Bands for spin down
+    bands_down.bands = deepcopy(bands.bands[down_index])
+
+    return ProjectionWithSpin(projection_up, projection_down),
+        BandsWithSpin(bands_up, bands_down)
 end

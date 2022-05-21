@@ -30,19 +30,15 @@ end
 end
 
 @testset "Toolkit/projection.jl" begin
-    projection_all = Projection()
-    projection_all.projection_square = ones(1,1,1,9)
-    projection_all.projection_square[1,1,1,1] = 0.5
-    projection_z = Projection()
-    projection_z.projection_square = ones(1,1,1,9)
-    projection_z.projection_square[1,1,1,1] = -0.2
-    sign_matrix = get_projection_sign(projection_z)
-    new_projection_all = apply_projection_sign(projection_all, sign_matrix)
-    bands = Bands(1,1)
+    projection_all = Projection(1,2,1, complex.(zeros(1,2,1,9)), zeros(1,2,1,9))
+    projection_all.projection_square[1,1,1,1:9] .= 0.5
+    projection_all.projection_square[1,2,1,1:9] .= 0.5
+    projection_z = Projection(1,2,1, complex.(zeros(1,2,1,9)), zeros(1,2,1,9))
+    projection_z.projection_square[1,1,1,1:9] .= 0.5
+    projection_z.projection_square[1,2,1,1:9] .= -0.5
+    bands = Bands(2,1)
     projection, bands = distinguish_spin(projection_all, projection_z, bands)
-    @test sign_matrix[1,1,1,1] == -1
-    @test new_projection_all.projection_square[1,1,1,1] == -0.5
-    @test projection.projection_up.projection_square[1,1,1,1] == 0
+    @test projection.projection_up.projection_square[1,1,1,1] == 0.5
     @test projection.projection_down.projection_square[1,1,1,1] == 0.5
 end
 
