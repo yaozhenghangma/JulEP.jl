@@ -36,6 +36,19 @@ tolerance = 0.15                            # minimum value of projection charac
 magnify = 7.0                               # marker_size = magnify * projection_character
 max_size = 3.0                              # maximum value of marker size
 
+function ticks_length!(;tl=0.02)
+    p = Plots.current()
+    xticks, yticks = Plots.xticks(p)[1][1], Plots.yticks(p)[1][1]
+    xl, yl = Plots.xlims(p), Plots.ylims(p)
+    x1, y1 = zero(yticks) .+ xl[1], zero(xticks) .+ yl[1]
+    sz = p.attr[:size]
+    r = sz[1]/sz[2]
+    dx, dy = tl*(xl[2] - xl[1]), tl*r*(yl[2] - yl[1])
+    plot!([xticks xticks]', [y1 y1 .+ dy]', c=:black, labels=false)
+    plot!([x1 x1 .+ dx]', [yticks yticks]', c=:black, labels=false, xlims=xl, ylims=yl)
+    return Plots.current()
+end
+
 # some basic setting for the figure
 plot(
     dpi = 300,
@@ -56,6 +69,8 @@ plot(
     bottom_margin = 1.0Plots.cm,
     left_margin = 1.0Plots.cm,
 )
+
+ticks_length!(;tl=0.02)
 
 # plot all bands. black solid for spin up and gray dash line for spin down
 plot!(bands, kpoints; critical_points = critical_points, colorlist = [:black, :black], stylelist = [:solid, :dash])

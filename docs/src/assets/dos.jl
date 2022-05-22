@@ -40,6 +40,19 @@ pdos_up_3, pdos_down_3 = generate_dos(bands, kpoints, projection; smear=smear, i
 pdos_up_4, pdos_down_4 = generate_dos(bands, kpoints, projection; smear=smear, ions=[1], orbits=[9])
 
 # some basic setting for the figure
+function ticks_length!(;tl=0.02)
+    p = Plots.current()
+    xticks, yticks = Plots.xticks(p)[1][1], Plots.yticks(p)[1][1]
+    xl, yl = Plots.xlims(p), Plots.ylims(p)
+    x1, y1 = zero(yticks) .+ xl[1], zero(xticks) .+ yl[1]
+    sz = p.attr[:size]
+    r = sz[1]/sz[2]
+    dx, dy = tl*(xl[2] - xl[1]), tl*r*(yl[2] - yl[1])
+    plot!([xticks xticks]', [y1 y1 .+ dy]', c=:black, labels=false)
+    plot!([x1 x1 .+ dx]', [yticks yticks]', c=:black, labels=false, xlims=xl, ylims=yl)
+    return Plots.current()
+end
+
 plot(
     dpi = 300,
     size = (800, 600),
@@ -59,6 +72,8 @@ plot(
     bottom_margin = 1.2Plots.cm,
     left_margin = 1.0Plots.cm,
 )
+
+ticks_length!(;tl=0.02)
 
 # plot projected dos, blue line for spin up and red line for spin down
 plot!(pdos_up_0; shift = 0, max = 2, stretch_ratio = 2, linecolor = :blue)

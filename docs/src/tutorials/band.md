@@ -2,14 +2,14 @@
 
 Here, we will show how to plot projected band structure using PROCAR, as our first example.
 
-To complete this task, we need three packages.
+To perform this task, we need three packages.
 ```julia
 using MatterEnv
 using Plots
 using LaTeXStrings
 ```
 
-The first step is to load metadata from PROCAR file, you can check the details from this [section](@ref PROCARManual).
+The first step is to load metadata from PROCAR file. You can check the details from this [section](@ref PROCARManual).
 Here, we use a GGA+U+SOC result with `lorbit=12` tag.
 ```julia
 projection_all, _, _, projection_z, kpoints, bands = load_procar("PROCAR"; noncollinear=true)
@@ -21,7 +21,7 @@ fermi_energy =  -3.0009
 shift_energy!(bands, -fermi_energy)
 ```
 
-Then we define two transformation matrix to do orbit transformation. You chan check the details from this [section](@ref OrbitManual)
+Then we define two transformation matrices to do orbit transformation. You chan check the details from this [section](@ref OrbitManual)
 ```julia
 transformation_matrix1 =
 [
@@ -42,7 +42,7 @@ transformation_matrix2 =
 projection_transformation!(projection_all, transformation_matrix1, transformation_matrix2)
 ```
 
-Since VASP doesn't distinguish between major spin and minor spin, we use a [trick](@ref TrickManual).
+Since VASP doesn't distinguish between major spin and minor spin, we need use a [trick](@ref TrickManual) to separate projections.
 ```julia
 projection, bands = distinguish_spin(projection_all, projection_z, bands)
 ```
