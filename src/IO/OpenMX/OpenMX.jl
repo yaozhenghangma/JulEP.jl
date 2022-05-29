@@ -12,18 +12,3 @@
 #
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
-module MatterEnv
-
-using LinearAlgebra
-using Printf
-import RecipesBase
-
-include("MatterBase/MatterBase.jl")
-include("IO/VASP/VASP.jl")
-include("IO/OpenMX/OpenMX.jl")
-include("IO/Wannier90/Wannier90.jl")
-include("Toolkit/Toolkit.jl")
-include("Visualization/Visualization.jl")
-
-end
