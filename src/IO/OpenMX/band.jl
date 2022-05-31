@@ -63,7 +63,7 @@ function load_openmx_band!(filename::String)
     reciprocal_lattice = Matrix(transpose(reshape(split_line, 3, 3)))
 
     # k path info
-    number_kpath = parse(Int, split(strip(readline(input))))[1]
+    number_kpath = parse(Int, split(strip(readline(input)))[1])
     number_kpoints = zeros(number_kpath)
     for i in 1:number_kpath
         split_line = split(strip(readline(input)))
