@@ -13,7 +13,7 @@
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-function read_bands!(input, bands::Bands, kpoints::Array{Kpoint, 1},
+function read_bands!(input, bands::Bands, kpoints::Array{KPoint, 1},
     number_kpath, number_kpoints, reciprocal_lattice, fermi_energy, unit)
     k_number = 1
     for i in 1:number_kpath
@@ -31,7 +31,7 @@ function read_bands!(input, bands::Bands, kpoints::Array{Kpoint, 1},
     return nothing
 end
 
-function read_bands!(input, band::BandsWithSpin, kpoint::Array{Kpoint, 1},
+function read_bands!(input, band::BandsWithSpin, kpoint::Array{KPoint, 1},
     number_kpath, number_kpoints, reciprocal_lattice, fermi_energy, unit)
 end
 
