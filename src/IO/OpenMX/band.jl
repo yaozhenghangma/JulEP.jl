@@ -19,13 +19,14 @@ function read_bands!(input, bands::Bands, kpoints::Array{KPoint, 1},
     for i in 1:number_kpath
         for j in 1:number_kpoints[i]
             split_line = split(strip(readline(input)))
-            number_bands = parse(int, split_line[1])
+            number_bands = parse(Int, split_line[1])
             kpoints[k_number].coordinate =
-                parse.(Float64, split_line[2:4]) * reciprocal_lattice
+                transpose(reciprocal_lattice) * parse.(Float64, split_line[2:4])
             split_line = parse.(Float64, split(strip(readline(input))))
             for k in 1:number_bands
-                badns.bands[k].energy[k_number] = (split_line[k] - fermi_energy) * unit
+                bands.bands[k].energy[k_number] = (split_line[k] - fermi_energy) * unit
             end
+            k_number += 1
         end
     end
     return nothing
@@ -76,9 +77,9 @@ function load_openmx_band!(filename::String)
         push!(kpoints, KPoint())
     end
     if spin_state
-        bands = BandsWithSpin(number_bands, sum(number_kpoints))
+        bands = BandsWithSpin(number_bands, Int(sum(number_kpoints)))
     else
-        bands = Bands(number_bands, sum(number_kpoints))
+        bands = Bands(number_bands, Int(sum(number_kpoints)))
     end
 
     # band structure
