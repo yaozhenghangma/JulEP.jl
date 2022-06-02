@@ -13,7 +13,15 @@
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-include("amn.jl")
-include("eig.jl")
+function load_eig(filename::String, number_bands::Integer, number_kpoints::Integer)
+    input = open(filename, "r")
 
-export load_amn, load_eig
+    bands = Bands(number_bands, number_kpoints)
+    for i in 1:number_kpoints, j in 1:number_bands
+        split_line = split(strip(readline(input)))
+        bands.bands[j].energy[i] = parse(Float64, split_line[3])
+    end
+
+    close(input)
+    return bands
+end
