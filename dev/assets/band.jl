@@ -70,10 +70,10 @@ plot(
     left_margin = 1.0Plots.cm,
 )
 
-ticks_length!(;tl=0.02)
-
 # plot all bands. black solid for spin up and gray dash line for spin down
 plot!(bands, kpoints; critical_points = critical_points, colorlist = [:black, :black], stylelist = [:solid, :dash])
+
+ticks_length!(;tl=0.02)
 
 # plot projected band structure
 plot!(projection, kpoints, bands; ion=1, orbit=7, markeralpha =1, markerstrokecolor=:red, markercolor=:red,  tolerance=tolerance, max_size=max_size, magnify=magnify)
